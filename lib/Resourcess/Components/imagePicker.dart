@@ -5,6 +5,8 @@ import 'dart:io';
 import 'Colors.dart';
 
 class ImagePickerWidget extends StatefulWidget {
+  const ImagePickerWidget({super.key});
+
   @override
   _ImagePickerWidgetState createState() => _ImagePickerWidgetState();
 }
@@ -19,7 +21,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     if (pickedFile != null) {
       final file = File(pickedFile.path);
       final fileSize = await file.length();
-      final maxFileSize = 25 * 1024 * 1024; // 25MB in bytes
+      const maxFileSize = 25 * 1024 * 1024; // 25MB in bytes
 
       if (fileSize <= maxFileSize) {
         setState(() {
@@ -27,7 +29,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('File size should not exceed 25MB')),
+          const SnackBar(content: Text('File size should not exceed 25MB')),
         );
       }
     }
@@ -39,8 +41,8 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
       onTap: _pickImage,
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
+        padding: const EdgeInsets.all(10),
+        decoration: const BoxDecoration(
           color: AppColors.textFieldColor,
         ),
         child: Column(
@@ -57,8 +59,8 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(height: 10),
-            Text(
+            const SizedBox(height: 10),
+            const Text(
               'Add Profile Photo \n Max size 25MB',
               textAlign: TextAlign.center,
               style: TextStyle(

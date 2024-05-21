@@ -32,7 +32,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset('assets/images/Logo.png'),
-                    Text(
+                    const Text(
                       'Sign Up',
                       style: TextStyle(
                         fontSize: 42,
@@ -54,7 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     children: [
                       allText(text: 'add profile photo'),
                       SizedBox(height: height * 0.02),
-                      ImagePickerWidget(),
+                      const ImagePickerWidget(),
                       allText(text: 'Name'),
                       SizedBox(height: height * 0.02),
                       allTextField(hintText: 'Name'),
@@ -92,7 +92,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
+                          const Text(
                             'Already have an account?',
                             style: TextStyle(
                               fontSize: 16,
@@ -104,7 +104,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             onPressed: () {
                               Navigator.pushNamed(context, RoutesName.signInScreen);
                             },
-                            child: Text(
+                            child: const Text(
                               'Sign In',
                               style: TextStyle(
                                 fontSize: 16,

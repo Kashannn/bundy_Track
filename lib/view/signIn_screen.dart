@@ -1,7 +1,6 @@
 import 'package:bundy_track/Resourcess/Components/Colors.dart';
 import 'package:bundy_track/Resourcess/Components/widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../utils/routes/routes_name.dart';
 
@@ -26,7 +25,7 @@ class SignInScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset('assets/images/Logo.png'),
-                    Text(
+                    const Text(
                       'Sign In',
                       style: TextStyle(
                         fontSize: 42,
@@ -61,7 +60,7 @@ class SignInScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
+                          const Text(
                             'Don\'t have an account?',
                             style: TextStyle(
                               fontSize: 16,
@@ -73,7 +72,7 @@ class SignInScreen extends StatelessWidget {
                             onPressed: () {
                               Navigator.pushNamed(context, RoutesName.signUpScreen);
                             },
-                            child: Text(
+                            child: const Text(
                               'Sign Up',
                               style: TextStyle(
                                 fontSize: 16,

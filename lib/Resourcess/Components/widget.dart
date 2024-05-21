@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:bundy_track/Resourcess/Components/Colors.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,7 @@ Widget allTextField({
       filled: true,
       fillColor: AppColors.textFieldColor,
       hintText: hintText,
-      hintStyle: TextStyle(
+      hintStyle: const TextStyle(
         fontSize: 16,
         fontFamily: 'Poppins',
       ),
@@ -31,7 +30,7 @@ Widget allText({
 }) {
   return Text(
     text,
-    style: TextStyle(
+    style: const TextStyle(
       fontSize: 16,
       fontFamily: 'Poppins',
       color: AppColors.textColor,
@@ -44,25 +43,25 @@ Widget allButton({
   required String text,
   required VoidCallback onPressed,
 }) {
-  return Container(
+  return SizedBox(
     width: double.infinity, // This makes the button span the entire width of the screen
     child: ElevatedButton(
       onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.buttonColor,
+        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        minimumSize: const Size(double.infinity, 50), // Set the desired width and height here
+      ),
       child: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 16,
           fontFamily: 'Poppins',
           color: Colors.white,
         ),
-      ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.buttonColor,
-        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        minimumSize: Size(double.infinity, 50), // Set the desired width and height here
       ),
     ),
   );
@@ -77,8 +76,8 @@ Widget allDropdownButton({
 }) {
   return Container(
     width: double.infinity,
-    padding: EdgeInsets.symmetric(horizontal: 16.0),
-    decoration: BoxDecoration(
+    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+    decoration: const BoxDecoration(
       color: AppColors.textFieldColor, // Use the same background color as the TextField
 
     ),
@@ -90,7 +89,7 @@ Widget allDropdownButton({
             value: item,
             child: Text(
               item,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black, // Set the text color here
                 fontSize: 16,
                 fontFamily: 'Poppins', // Use the same font as the TextField hint
