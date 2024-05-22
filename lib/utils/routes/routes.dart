@@ -1,7 +1,9 @@
+import 'dart:ffi';
+
 import 'package:bundy_track/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
-
 import '../../Resourcess/Components/tabbar.dart';
+import '../../view/allocator.dart';
 import '../../view/signIn_screen.dart';
 import '../../view/signUp_Screen.dart';
 import '../../view/time_hours.dart';
@@ -21,6 +23,8 @@ class Routes{
         return MaterialPageRoute(builder: (_) => const TimeHours());
         case RoutesName.tabBarScreen:
         return MaterialPageRoute(builder: (_) => CustomTabBar());
+        case RoutesName.allocator:
+        return MaterialPageRoute(builder: (_) =>  AllocatorScreen());
 
       default:
         return MaterialPageRoute(builder: (_){

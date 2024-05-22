@@ -1,5 +1,6 @@
 import 'package:bundy_track/utils/routes/routes.dart';
 import 'package:bundy_track/utils/routes/routes_name.dart';
+import 'package:bundy_track/view/allocator.dart';
 import 'package:bundy_track/view/welcome_Screen.dart';
 
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-       initialRoute: RoutesName.timeHours,
+       initialRoute: RoutesName.allocator,
       onGenerateRoute: Routes.generateRoute,
     );
   }

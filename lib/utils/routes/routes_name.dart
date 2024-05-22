@@ -5,4 +5,5 @@ class RoutesName {
   static const String welcomeScreen = '/welcomeScreen';
   static const String timeHours = '/timeHours';
   static const String tabBarScreen = '/CustomTabBar';
+  static const String allocator = '/Allocator';
 }

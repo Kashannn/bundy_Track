@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
 import '../Resourcess/Components/Colors.dart';
+import '../utils/routes/routes_name.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({super.key});
+
+  const WelcomeScreen({Key? key}) : super(key: key);
 
   @override
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  bool isSwitched = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +34,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   Positioned.fill(
                     child: Image.asset(
                       'assets/images/stackimage1.png', // Replace with your image path
-                      fit: BoxFit.cover, // Ensure the image covers the container
+                      fit:
+                          BoxFit.cover, // Ensure the image covers the container
                     ),
                   ),
                   Center(
@@ -50,15 +55,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.menu),
+                            icon: const Icon(Icons.menu),
                             onPressed: () {
                               // Add drawer open functionality here
                             },
                             color: Colors.white, // Change color if needed
                           ),
-                          CircleAvatar(
+                          const CircleAvatar(
                             radius: 20, // Adjust size as needed
-                            backgroundImage: AssetImage('assets/images/user_image.png'), // Replace with your user image path
+                            backgroundImage: AssetImage(
+                                'assets/images/user_image.png'), // Replace with your user image path
                           ),
                         ],
                       ),
@@ -74,7 +80,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           color: Colors.white,
                           width: 4,
                         ),
-                        shape: BoxShape.rectangle, // Use BoxShape.circle for circular images
+                        shape: BoxShape
+                            .rectangle, // Use BoxShape.circle for circular images
                       ),
                       child: Image.asset(
                         'assets/images/Logo.png', // Replace with your logo image path
@@ -99,7 +106,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Container(
                 height: 70,
-                width:double.infinity,
+                width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
@@ -108,7 +115,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   ),
                   shape: BoxShape.rectangle,
                 ),
-                child:Padding(
+                child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -124,9 +131,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Switch(
-                          value: false,
+                          value: isSwitched,
                           onChanged: (bool value) {
-
+                            setState(() {
+                              isSwitched = value;
+                              if (isSwitched) {
+                                // Navigate to the next screen
+                                Navigator.pushNamed(
+                                    context, RoutesName.timeHours);
+                              }
+                            });
                           },
                           activeColor: Colors.blue,
                           activeTrackColor: Colors.lightBlueAccent,
@@ -134,11 +148,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       ),
                     ],
                   ),
-                )
-
+                ),
               ),
             ),
-
           ],
         ),
       ),

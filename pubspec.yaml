@@ -38,6 +38,7 @@ dependencies:
   flutter_svg_image: ^1.1.0+1
   flutter_svg: ^2.0.10+1
   image_picker: ^1.1.1
+  stop_watch_timer: ^2.0.0
 
 dev_dependencies:
   flutter_test:
