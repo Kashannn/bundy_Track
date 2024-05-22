@@ -54,13 +54,36 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          IconButton(
+                          PopupMenuButton<String>(
                             icon: const Icon(Icons.menu),
-                            onPressed: () {
-                              // Add drawer open functionality here
+                            onSelected: (String result) {
+                              switch (result) {
+                                case 'Profile':
+                                 Navigator.pushNamed(context, RoutesName.profile);
+                                  break;
+                                case 'Logout':
+                                // Implement your logout logic here
+                                  break;
+                              }
                             },
-                            color: Colors.white, // Change color if needed
+                            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                              const PopupMenuItem<String>(
+                                value: 'Profile',
+                                child: ListTile(
+                                  leading: Icon(Icons.person),
+                                  title: Text('Profile'),
+                                ),
+                              ),
+                              const PopupMenuItem<String>(
+                                value: 'Logout',
+                                child: ListTile(
+                                  leading: Icon(Icons.logout),
+                                  title: Text('Logout'),
+                                ),
+                              ),
+                            ],
                           ),
+
                           const CircleAvatar(
                             radius: 20, // Adjust size as needed
                             backgroundImage: AssetImage(

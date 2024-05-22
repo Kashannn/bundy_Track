@@ -4,10 +4,13 @@ import 'package:bundy_track/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import '../../Resourcess/Components/tabbar.dart';
 import '../../view/allocator.dart';
+import '../../view/overtime.dart';
+import '../../view/profile.dart';
 import '../../view/signIn_screen.dart';
 import '../../view/signUp_Screen.dart';
 import '../../view/time_hours.dart';
 import '../../view/welcome_Screen.dart';
+import '../../view/yesno.dart';
 
 class Routes{
   static MaterialPageRoute generateRoute(RouteSettings settings){
@@ -24,7 +27,13 @@ class Routes{
         case RoutesName.tabBarScreen:
         return MaterialPageRoute(builder: (_) => CustomTabBar());
         case RoutesName.allocator:
-        return MaterialPageRoute(builder: (_) =>  AllocatorScreen());
+        return MaterialPageRoute(builder: (_) =>  const AllocatorScreen());
+        case RoutesName.profile:
+          return MaterialPageRoute(builder: (_) =>  const Profile());
+        case RoutesName.overtime:
+          return MaterialPageRoute(builder: (_) => const Overtime());
+        case RoutesName.selectionScreen:
+          return MaterialPageRoute(builder: (_) => const Selection());
 
       default:
         return MaterialPageRoute(builder: (_){

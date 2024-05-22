@@ -86,7 +86,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       SizedBox(height: height * 0.02),
                       allButton(
                         text: 'Sign Up',
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, RoutesName.welcomeScreen);
+                        },
                       ),
                       SizedBox(height: height * 0.03),
                       Row(

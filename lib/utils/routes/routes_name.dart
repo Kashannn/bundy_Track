@@ -6,4 +6,7 @@ class RoutesName {
   static const String timeHours = '/timeHours';
   static const String tabBarScreen = '/CustomTabBar';
   static const String allocator = '/Allocator';
+  static const String profile = '/profile';
+  static const String overtime = '/overtime';
+  static const String selectionScreen = '/selectionScreen';
 }
