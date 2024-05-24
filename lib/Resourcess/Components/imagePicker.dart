@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -5,7 +6,9 @@ import 'dart:io';
 import 'Colors.dart';
 
 class ImagePickerWidget extends StatefulWidget {
-  const ImagePickerWidget({super.key});
+  final Function(String) onImagePicked;
+
+  const ImagePickerWidget({required this.onImagePicked, Key? key}) : super(key: key);
 
   @override
   _ImagePickerWidgetState createState() => _ImagePickerWidgetState();
@@ -14,10 +17,11 @@ class ImagePickerWidget extends StatefulWidget {
 class _ImagePickerWidgetState extends State<ImagePickerWidget> {
   File? _imageFile;
   final ImagePicker _picker = ImagePicker();
+  String imageUrl = '';
+  String? _fileName;
 
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
     if (pickedFile != null) {
       final file = File(pickedFile.path);
       final fileSize = await file.length();
@@ -26,7 +30,20 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
       if (fileSize <= maxFileSize) {
         setState(() {
           _imageFile = file;
+          _fileName = pickedFile.name; // Store the file name
         });
+        // Upload image to Firebase Storage
+        String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+        Reference referenceRoot = FirebaseStorage.instance.ref();
+        Reference storageReference = referenceRoot.child('Image');
+        Reference referenceImageToUpload = storageReference.child(uniqueFileName);
+        try {
+          await referenceImageToUpload.putFile(_imageFile!);
+          imageUrl = await referenceImageToUpload.getDownloadURL();
+          widget.onImagePicked(imageUrl); // Pass the image URL to the parent widget
+        } on FirebaseException catch (e) {
+          print(e);
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('File size should not exceed 25MB')),
@@ -48,15 +65,16 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _imageFile == null
+            _fileName == null
                 ? Image.asset(
-              'assets/images/Frame.png', // Path to your phone image
+              'assets/images/Frame.png', // Path to your placeholder image
             )
-                : ClipRRect(
-              borderRadius: BorderRadius.circular(75),
-              child: Image.file(
-                _imageFile!,
-                fit: BoxFit.cover,
+                : Text(
+              _fileName!, // Display the file name
+              style: const TextStyle(
+                color: AppColors.textColor,
+                fontSize: 16,
+                fontFamily: 'Poppins',
               ),
             ),
             const SizedBox(height: 10),

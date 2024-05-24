@@ -36,9 +36,7 @@ class _ProfileState extends State<Profile> {
                           right: 0,
                           bottom: 0,
                           child: GestureDetector(
-                            onTap: () {
-
-                            },
+                            onTap: () {},
                             child: CircleAvatar(
                               radius:
                                   15, // Adjust the size of the edit icon as needed

@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:bundy_track/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +16,11 @@ class Routes{
     switch(settings.name){
 
       case RoutesName.signInScreen:
-        return MaterialPageRoute(builder: (_) => const SignInScreen());
+        return MaterialPageRoute(builder: (_) => SignInScreen());
       case RoutesName.signUpScreen:
         return MaterialPageRoute(builder: (_) => const SignUpScreen());
         case RoutesName.welcomeScreen:
-        return MaterialPageRoute(builder: (_) => const WelcomeScreen());
+        return MaterialPageRoute(builder: (_) => WelcomeScreen());
         case RoutesName.timeHours:
         return MaterialPageRoute(builder: (_) => const TimeHours());
         case RoutesName.tabBarScreen:

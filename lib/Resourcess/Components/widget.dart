@@ -7,8 +7,9 @@ Widget allTextField({
   TextInputType keyboardType = TextInputType.text,
   bool obscureText = false,
   TextEditingController? controller,
+  String? Function(String?)? validator,
 }) {
-  return TextField(
+  return TextFormField(
     decoration: InputDecoration(
       filled: true,
       fillColor: AppColors.textFieldColor,
@@ -22,8 +23,10 @@ Widget allTextField({
     keyboardType: keyboardType,
     obscureText: obscureText,
     controller: controller,
+    validator: validator,
   );
 }
+
 
 Widget allText({
   required String text,

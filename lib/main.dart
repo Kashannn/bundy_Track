@@ -2,11 +2,15 @@ import 'package:bundy_track/utils/routes/routes.dart';
 import 'package:bundy_track/utils/routes/routes_name.dart';
 import 'package:bundy_track/view/allocator.dart';
 import 'package:bundy_track/view/welcome_Screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/material.dart';
 
 
-void main() {
+void main() async
+{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

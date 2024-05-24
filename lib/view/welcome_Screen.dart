@@ -1,18 +1,39 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import '../Resourcess/Components/Colors.dart';
 import '../utils/routes/routes_name.dart';
 
 class WelcomeScreen extends StatefulWidget {
-
-  const WelcomeScreen({Key? key}) : super(key: key);
-
   @override
-  State<WelcomeScreen> createState() => _WelcomeScreenState();
+  _WelcomeScreenState createState() => _WelcomeScreenState();
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  String userName = '';
+  String userImageUrl = '';
   bool isSwitched = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    User? currentUser = auth.currentUser;
+    if (currentUser != null) {
+      DocumentSnapshot userDoc =
+          await firestore.collection('users').doc(currentUser.uid).get();
+      setState(() {
+        userName = userDoc['Name'] ?? '';
+        userImageUrl = userDoc['ImageURL'] ?? '';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,14 +80,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             onSelected: (String result) {
                               switch (result) {
                                 case 'Profile':
-                                 Navigator.pushNamed(context, RoutesName.profile);
+                                  Navigator.pushNamed(
+                                      context, RoutesName.profile);
                                   break;
                                 case 'Logout':
-                                // Implement your logout logic here
+                                  // Implement your logout logic here
                                   break;
                               }
                             },
-                            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                            itemBuilder: (BuildContext context) =>
+                                <PopupMenuEntry<String>>[
                               const PopupMenuItem<String>(
                                 value: 'Profile',
                                 child: ListTile(
@@ -83,11 +106,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               ),
                             ],
                           ),
-
-                          const CircleAvatar(
-                            radius: 20, // Adjust size as needed
-                            backgroundImage: AssetImage(
-                                'assets/images/user_image.png'), // Replace with your user image path
+                          CircleAvatar(
+                            radius: 30,
+                            backgroundColor: AppColors.container,
+                            backgroundImage: userImageUrl.isNotEmpty
+                                ? NetworkImage(userImageUrl)
+                                : null,
+                            child: userImageUrl.isEmpty
+                                ? Icon(
+                                    Icons.person,
+                                    size: 60,
+                                    color: Colors.white,
+                                  )
+                                : null,
                           ),
                         ],
                       ),
@@ -117,7 +148,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
             SizedBox(height: 20),
             Text(
-              'welcome Chris',
+              'welcome $userName',
               style: TextStyle(
                 fontSize: 42,
                 fontWeight: FontWeight.bold,
