@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/routes/routes_name.dart';
+import '../utils/utils.dart';
 
 class SignInScreen extends StatefulWidget {
   SignInScreen({super.key});
@@ -17,24 +18,41 @@ class _SignInScreenState extends State<SignInScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  Utils utils = Utils();
 
+  // Show loading indicator
 
-  //code to sign in into firebase
+  // Hide loading indicator
+  void _hideLoadingDialog() {
+    Navigator.of(context).pop();
+  }
+
+  // Code to sign in to Firebase
   void _signIn() async {
     if (_formKey.currentState!.validate()) {
+      showLoadingDialog(context, "Signing in..."); // Show loading indicator
+
       try {
-        print('Attempting to sign in...');
-        await auth.signInWithEmailAndPassword(
+        await auth
+            .signInWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
-        );
-        Navigator.pushNamed(context, RoutesName.welcomeScreen);
-        print('Sign-in successful');
+        )
+            .then((value) {
+          _hideLoadingDialog();
+          utils.flashBarErrorMessage("Sign in successful", context);
+          Navigator.pushNamed(context, RoutesName.welcomeScreen);
+        }).onError((error, stackTrace) {
+          _hideLoadingDialog(); // Hide loading indicator
+          utils.flashBarErrorMessage("You have no account first Sign Up", context);
+        });
       } on FirebaseAuthException catch (e) {
+        _hideLoadingDialog(); // Hide loading indicator
         if (e.code == 'user-not-found') {
-          print('No user found for that email.');
+          utils.flashBarErrorMessage('No user found for that email.', context);
         } else if (e.code == 'wrong-password') {
-          print('Wrong password provided for that user.');
+          utils.flashBarErrorMessage(
+              'Wrong password provided for that user.', context);
         }
       }
     }
@@ -93,7 +111,8 @@ class _SignInScreenState extends State<SignInScreen> {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your email';
                             }
-                            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                                .hasMatch(value)) {
                               return 'Please enter a valid email';
                             }
                             return null;
@@ -133,7 +152,8 @@ class _SignInScreenState extends State<SignInScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, RoutesName.signUpScreen);
+                                Navigator.pushNamed(
+                                    context, RoutesName.signUpScreen);
                               },
                               child: const Text(
                                 'Sign Up',

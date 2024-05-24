@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../Resourcess/Components/reuseableContainer.dart';
 
@@ -10,13 +12,40 @@ class AllocatorScreen extends StatefulWidget {
 
 class _AllocatorScreenState extends State<AllocatorScreen> {
   int _expandedIndex = -1; // -1 means no item is expanded
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  String userName = '';
+  String userImageUrl = '';
+  bool isSwitched = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    User? currentUser = auth.currentUser;
+    if (currentUser != null) {
+      DocumentSnapshot userDoc =
+      await firestore.collection('users').doc(currentUser.uid).get();
+      setState(() {
+        userName = userDoc['Name'] ?? '';
+        userImageUrl = userDoc['ImageURL'] ?? '';
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          ReusableContainer(),
+          ReusableContainer(
+            name: '$userName',
+            circularImageUrl: '$userImageUrl',
+          ),
           SizedBox(height: 30),
           Expanded(
             child: ListView.builder(

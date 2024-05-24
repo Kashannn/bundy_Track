@@ -1,5 +1,7 @@
 import 'package:bundy_track/Resourcess/Components/reuseableContainer.dart';
 import 'package:bundy_track/utils/routes/routes_name.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Overtime extends StatefulWidget {
@@ -10,12 +12,40 @@ class Overtime extends StatefulWidget {
 }
 
 class _OvertimeState extends State<Overtime> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  String userName = '';
+  String userImageUrl = '';
+  bool isSwitched = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    User? currentUser = auth.currentUser;
+    if (currentUser != null) {
+      DocumentSnapshot userDoc =
+      await firestore.collection('users').doc(currentUser.uid).get();
+      setState(() {
+        userName = userDoc['Name'] ?? '';
+        userImageUrl = userDoc['ImageURL'] ?? '';
+      });
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          ReusableContainer(),
+          ReusableContainer(
+            name: '$userName',
+            circularImageUrl: '$userImageUrl',
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: 5, // Number of items in the list

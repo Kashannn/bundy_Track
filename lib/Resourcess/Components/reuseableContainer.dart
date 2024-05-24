@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
 
+import 'Colors.dart';
+
 class ReusableContainer extends StatelessWidget {
+  final String name;
+  final String circularImageUrl;
+
+  ReusableContainer({
+    Key? key,
+    required this.name,
+    required this.circularImageUrl,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -46,10 +57,10 @@ class ReusableContainer extends StatelessWidget {
                         color: Colors.white, // Change color if needed
                       ),
                       SizedBox(
-                          width:
-                          8), // Add space between icon and text
+                        width: 8, // Add space between icon and text
+                      ),
                       Text(
-                        'Kashan',
+                        name,
                         style: TextStyle(
                           fontSize: 16,
                           fontFamily: 'Poppins',
@@ -59,9 +70,18 @@ class ReusableContainer extends StatelessWidget {
                     ],
                   ),
                   CircleAvatar(
-                    radius: 20, // Adjust size as needed
-                    backgroundImage:
-                    const AssetImage('assets/images/profile.png'),
+                    radius: 30,
+                    backgroundColor: AppColors.container,
+                    backgroundImage: circularImageUrl.isNotEmpty
+                        ? NetworkImage(circularImageUrl)
+                        : null,
+                    child: circularImageUrl.isEmpty
+                        ? Icon(
+                            Icons.person,
+                            size: 60,
+                            color: Colors.white,
+                          )
+                        : null,
                   ),
                 ],
               ),

@@ -6,6 +6,7 @@ import '../Resourcess/Components/dropdownbutton.dart';
 import '../Resourcess/Components/imagePicker.dart';
 import '../Resourcess/Components/widget.dart';
 import '../utils/routes/routes_name.dart';
+import '../utils/utils.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -23,10 +24,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController _departmentDropdownController = TextEditingController();
-  final TextEditingController _positionDropdownController = TextEditingController();
+  final TextEditingController _departmentDropdownController =
+      TextEditingController();
+  final TextEditingController _positionDropdownController =
+      TextEditingController();
 
-  String _imageUrl = ''; // Add a state variable to store the image URL
+  String _imageUrl = '';
+  Utils utils = Utils();// Add a state variable to store the image URL
 
   @override
   void dispose() {
@@ -39,35 +43,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> _signUp() async {
+
     if (_formKey.currentState!.validate()) {
+      showLoadingDialog(context, "loading...");
       try {
-        print('Attempting to create a new user...');
-        await auth.createUserWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passwordController.text.trim(),
-        );
-        print('User created successfully');
+        await auth
+            .createUserWithEmailAndPassword(
+          email: emailController.text.toString(),
+          password: passwordController.text.toString(),
+        ).then((value) {
+          utils.flashBarErrorMessage("Sign up successful", context);
+          Navigator.pushNamed(context, RoutesName.signInScreen);
+        }).onError((error, stackTrace) {
+          Utils utils = Utils();
+          utils.flashBarErrorMessage(error.toString(), context);
+        });
         await storeData(); // Call storeData after successful sign-up
       } on FirebaseAuthException catch (e) {
-        if (e.code == 'weak-password') {
-          print('The password provided is too weak.');
-        } else if (e.code == 'email-already-in-use') {
-          print('The account already exists for that email.');
-          // Try to sign in with the existing email and password
-          try {
-            print('Attempting to sign in with existing account...');
-            await auth.signInWithEmailAndPassword(
-              email: emailController.text.trim(),
-              password: passwordController.text.trim(),
-            );
-            print('Sign-in successful');
-            await storeData(); // Call storeData after successful sign-in
-          } catch (signInError) {
-            print('Sign-in failed: $signInError');
-          }
-        }
+        utils.flashBarErrorMessage(e.toString(), context);
       } catch (e) {
-        print('Sign-up failed: $e');
+       utils.flashBarErrorMessage(e.toString(), context);
       }
     }
   }
@@ -75,10 +70,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   // Store user data in Firestore
   Future<void> storeData() async {
     if (auth.currentUser != null) {
-      String id = DateTime
-          .now()
-          .millisecondsSinceEpoch
-          .toString();
+      String id = DateTime.now().millisecondsSinceEpoch.toString();
       await fireStore.doc(auth.currentUser!.uid).set({
         'Name': nameController.text.toString(),
         'Email': emailController.text.toString(),
@@ -88,12 +80,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         'Password': passwordController.text.toString(),
         'ImageURL': _imageUrl,
       }).then((value) {
-        print('Data stored');
-      }).catchError((error) {
-        print('Error: $error');
+      utils.flashBarErrorMessage("Sign up successful", context);
+      }).onError((error, stackTrace) {
+        utils.flashBarErrorMessage(error.toString(), context);
       });
     } else {
-      print('No user is signed in');
+      utils.flashBarErrorMessage("User not found", context);
     }
   }
 
@@ -104,8 +96,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 10.0, vertical: 20.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
             child: Form(
               key: _formKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -161,8 +153,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your email';
                             }
-                            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(
-                                value)) {
+                            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                                .hasMatch(value)) {
                               return 'Please enter a valid email';
                             }
                             return null;

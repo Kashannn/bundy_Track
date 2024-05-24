@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../Resourcess/Components/Colors.dart';
 import '../Resourcess/Components/imagePicker.dart';
 import '../Resourcess/Components/widget.dart';
 
@@ -11,6 +14,31 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  String userName = '';
+  String userImageUrl = '';
+
+  bool isSwitched = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    User? currentUser = auth.currentUser;
+    if (currentUser != null) {
+      DocumentSnapshot userDoc =
+          await firestore.collection('users').doc(currentUser.uid).get();
+      setState(() {
+        userName = userDoc['Name'] ?? '';
+        userImageUrl = userDoc['ImageURL'] ?? '';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -30,7 +58,17 @@ class _ProfileState extends State<Profile> {
                       children: [
                         CircleAvatar(
                           radius: 50,
-                          backgroundImage: AssetImage('assets/images/Logo.png'),
+                          backgroundColor: AppColors.container,
+                          backgroundImage: userImageUrl.isNotEmpty
+                              ? NetworkImage(userImageUrl)
+                              : null,
+                          child: userImageUrl.isEmpty
+                              ? Icon(
+                                  Icons.person,
+                                  size: 60,
+                                  color: Colors.white,
+                                )
+                              : null,
                         ),
                         Positioned(
                           right: 0,
@@ -58,8 +96,8 @@ class _ProfileState extends State<Profile> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Kashan Ashraf',
+                  Text(
+                    '$userName',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,

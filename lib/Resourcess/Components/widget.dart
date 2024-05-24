@@ -108,5 +108,24 @@ Widget allDropdownButton({
 }
 
 
+void showLoadingDialog(BuildContext context, String text) {
+  showDialog(
+    context: context,
+    barrierDismissible: false, // prevent dismissing dialog on tap outside
+    builder: (BuildContext context) {
+      return AlertDialog(
+        content: Row(
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(width: 20),
+            Text(text),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+
 
 

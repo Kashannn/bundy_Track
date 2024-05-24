@@ -1,4 +1,6 @@
 import 'package:bundy_track/Resourcess/Components/tabbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../Resourcess/Components/Colors.dart';
@@ -12,16 +14,46 @@ class TimeHours extends StatefulWidget {
 }
 
 class _TimeHoursState extends State<TimeHours> {
+
+ final FirebaseAuth auth = FirebaseAuth.instance;
+ final FirebaseFirestore firestore = FirebaseFirestore.instance;
+ String userName = '';
+ String userImageUrl = '';
+ bool isSwitched = true;
+
+ @override
+ void initState() {
+   super.initState();
+   _fetchUserData();
+ }
+
+ Future<void> _fetchUserData() async {
+   User? currentUser = auth.currentUser;
+   if (currentUser != null) {
+     DocumentSnapshot userDoc =
+     await firestore.collection('users').doc(currentUser.uid).get();
+     setState(() {
+       userName = userDoc['Name'] ?? '';
+       userImageUrl = userDoc['ImageURL'] ?? '';
+     });
+   }
+ }
+
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
           child: Column(
             children: <Widget>[
-               ReusableContainer(),
+              ReusableContainer(
+                name: '$userName',
+                circularImageUrl: '$userImageUrl',
+              ),
+
               SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -52,14 +84,21 @@ class _TimeHoursState extends State<TimeHours> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Switch(
-                            value: true,
+                            value: isSwitched,
                             onChanged: (bool value) {
-                              // Add switch functionality here
+                              setState(() {
+                                isSwitched = value;
+                                if (!isSwitched) {
+                                  // Navigate back to WelcomeScreen
+                                  Navigator.pop(context);
+                                }
+                              });
                             },
                             activeColor: Colors.blue,
                             activeTrackColor: Colors.lightBlueAccent,
                           ),
                         ),
+
                       ],
                     ),
                   ),

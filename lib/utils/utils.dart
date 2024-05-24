@@ -17,7 +17,6 @@ class Utils {
     Fluttertoast.showToast(msg:message);
   }
 
-
   dynamic  flashBarErrorMessage(String message, BuildContext context) {
     Flushbar(
       message: message,
