@@ -42,7 +42,7 @@ class Utils {
       dismissDirection: FlushbarDismissDirection.HORIZONTAL,
       forwardAnimationCurve: Curves.fastLinearToSlowEaseIn,
       titleText: Text(
-        "Error",
+        "Message",
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 20,

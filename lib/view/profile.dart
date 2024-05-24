@@ -1,10 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../Resourcess/Components/Colors.dart';
 import '../Resourcess/Components/imagePicker.dart';
 import '../Resourcess/Components/widget.dart';
+import '../provider/Welcome_provider.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -14,29 +15,12 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  String userName = '';
-  String userImageUrl = '';
-
-  bool isSwitched = false;
+  late UserProvider userProvider;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
-  }
-
-  Future<void> _fetchUserData() async {
-    User? currentUser = auth.currentUser;
-    if (currentUser != null) {
-      DocumentSnapshot userDoc =
-          await firestore.collection('users').doc(currentUser.uid).get();
-      setState(() {
-        userName = userDoc['Name'] ?? '';
-        userImageUrl = userDoc['ImageURL'] ?? '';
-      });
-    }
+    userProvider = Provider.of<UserProvider>(context, listen: false);
   }
 
   @override
@@ -59,16 +43,9 @@ class _ProfileState extends State<Profile> {
                         CircleAvatar(
                           radius: 50,
                           backgroundColor: AppColors.container,
-                          backgroundImage: userImageUrl.isNotEmpty
-                              ? NetworkImage(userImageUrl)
-                              : null,
-                          child: userImageUrl.isEmpty
-                              ? Icon(
-                                  Icons.person,
-                                  size: 60,
-                                  color: Colors.white,
-                                )
-                              : null,
+                          backgroundImage: NetworkImage(
+                            userProvider.userImageUrl,
+                          ),
                         ),
                         Positioned(
                           right: 0,
@@ -97,7 +74,7 @@ class _ProfileState extends State<Profile> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '$userName',
+                    '${userProvider.userName}',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,

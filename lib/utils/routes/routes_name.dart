@@ -9,4 +9,6 @@ class RoutesName {
   static const String profile = '/profile';
   static const String overtime = '/overtime';
   static const String selectionScreen = '/selectionScreen';
+  static const String bundled = '/Bundled';
+  static const String home = '/home';
 }

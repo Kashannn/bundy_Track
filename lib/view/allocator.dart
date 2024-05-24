@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../Resourcess/Components/reuseableContainer.dart';
+import '../provider/Welcome_provider.dart';
 
 class AllocatorScreen extends StatefulWidget {
   const AllocatorScreen({Key? key}) : super(key: key);
@@ -11,29 +13,16 @@ class AllocatorScreen extends StatefulWidget {
 }
 
 class _AllocatorScreenState extends State<AllocatorScreen> {
-  int _expandedIndex = -1; // -1 means no item is expanded
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  String userName = '';
-  String userImageUrl = '';
-  bool isSwitched = false;
+
+  late UserProvider userProvider;
+  late bool isSwitched;
+  int _expandedIndex = -1;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
-  }
-
-  Future<void> _fetchUserData() async {
-    User? currentUser = auth.currentUser;
-    if (currentUser != null) {
-      DocumentSnapshot userDoc =
-      await firestore.collection('users').doc(currentUser.uid).get();
-      setState(() {
-        userName = userDoc['Name'] ?? '';
-        userImageUrl = userDoc['ImageURL'] ?? '';
-      });
-    }
+    userProvider = Provider.of<UserProvider>(context, listen: false);
+    isSwitched = userProvider.isSwitched;
   }
 
 
@@ -43,8 +32,8 @@ class _AllocatorScreenState extends State<AllocatorScreen> {
       body: Column(
         children: [
           ReusableContainer(
-            name: '$userName',
-            circularImageUrl: '$userImageUrl',
+            name: userProvider.userName,
+            circularImageUrl: userProvider.userImageUrl,
           ),
           SizedBox(height: 30),
           Expanded(

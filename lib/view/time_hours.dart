@@ -1,44 +1,29 @@
 import 'package:bundy_track/Resourcess/Components/tabbar.dart';
+import 'package:bundy_track/provider/Welcome_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../Resourcess/Components/Colors.dart';
 import '../Resourcess/Components/reuseableContainer.dart';
+import 'package:provider/provider.dart';
 
 class TimeHours extends StatefulWidget {
-  const TimeHours({super.key});
+  const TimeHours({Key? key}) : super(key: key);
 
   @override
   State<TimeHours> createState() => _TimeHoursState();
 }
 
 class _TimeHoursState extends State<TimeHours> {
+  late UserProvider userProvider;
+  late bool isSwitched;
 
- final FirebaseAuth auth = FirebaseAuth.instance;
- final FirebaseFirestore firestore = FirebaseFirestore.instance;
- String userName = '';
- String userImageUrl = '';
- bool isSwitched = true;
-
- @override
- void initState() {
-   super.initState();
-   _fetchUserData();
- }
-
- Future<void> _fetchUserData() async {
-   User? currentUser = auth.currentUser;
-   if (currentUser != null) {
-     DocumentSnapshot userDoc =
-     await firestore.collection('users').doc(currentUser.uid).get();
-     setState(() {
-       userName = userDoc['Name'] ?? '';
-       userImageUrl = userDoc['ImageURL'] ?? '';
-     });
-   }
- }
-
+  @override
+  void initState() {
+    super.initState();
+    userProvider = Provider.of<UserProvider>(context, listen: false);
+    isSwitched = userProvider.isSwitched;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,10 +35,9 @@ class _TimeHoursState extends State<TimeHours> {
           child: Column(
             children: <Widget>[
               ReusableContainer(
-                name: '$userName',
-                circularImageUrl: '$userImageUrl',
+                name: userProvider.userName,
+                circularImageUrl: userProvider.userImageUrl,
               ),
-
               SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -88,17 +72,18 @@ class _TimeHoursState extends State<TimeHours> {
                             onChanged: (bool value) {
                               setState(() {
                                 isSwitched = value;
+                                userProvider.toggleSwitch(value);
                                 if (!isSwitched) {
                                   // Navigate back to WelcomeScreen
                                   Navigator.pop(context);
                                 }
                               });
                             },
+
                             activeColor: Colors.blue,
                             activeTrackColor: Colors.lightBlueAccent,
                           ),
                         ),
-
                       ],
                     ),
                   ),

@@ -20,8 +20,6 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController passwordController = TextEditingController();
   Utils utils = Utils();
 
-  // Show loading indicator
-
   // Hide loading indicator
   void _hideLoadingDialog() {
     Navigator.of(context).pop();
@@ -38,22 +36,17 @@ class _SignInScreenState extends State<SignInScreen> {
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         )
-            .then((value) {
+            .then((value) async {
           _hideLoadingDialog();
-          utils.flashBarErrorMessage("Sign in successful", context);
           Navigator.pushNamed(context, RoutesName.welcomeScreen);
         }).onError((error, stackTrace) {
           _hideLoadingDialog(); // Hide loading indicator
-          utils.flashBarErrorMessage("You have no account first Sign Up", context);
+          utils.flashBarErrorMessage(
+              "You have no account first Sign Up", context);
         });
       } on FirebaseAuthException catch (e) {
         _hideLoadingDialog(); // Hide loading indicator
-        if (e.code == 'user-not-found') {
-          utils.flashBarErrorMessage('No user found for that email.', context);
-        } else if (e.code == 'wrong-password') {
-          utils.flashBarErrorMessage(
-              'Wrong password provided for that user.', context);
-        }
+        utils.flashBarErrorMessage(e.message.toString(), context);
       }
     }
   }

@@ -3,6 +3,8 @@ import 'package:bundy_track/utils/routes/routes_name.dart';
 import 'package:flutter/material.dart';
 import '../../Resourcess/Components/tabbar.dart';
 import '../../view/allocator.dart';
+import '../../view/bundled.dart';
+import '../../view/home.dart';
 import '../../view/overtime.dart';
 import '../../view/profile.dart';
 import '../../view/signIn_screen.dart';
@@ -33,6 +35,10 @@ class Routes{
           return MaterialPageRoute(builder: (_) => const Overtime());
         case RoutesName.selectionScreen:
           return MaterialPageRoute(builder: (_) => const Selection());
+          case RoutesName.bundled:
+          return MaterialPageRoute(builder: (_) => const Bundled());
+          case RoutesName.home:
+          return MaterialPageRoute(builder: (_) => Home());
 
       default:
         return MaterialPageRoute(builder: (_){

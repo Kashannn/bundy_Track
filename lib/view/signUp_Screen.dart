@@ -1,10 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../Resourcess/Components/Colors.dart';
 import '../Resourcess/Components/dropdownbutton.dart';
 import '../Resourcess/Components/imagePicker.dart';
 import '../Resourcess/Components/widget.dart';
+import '../firestore/firebase_service.dart';
 import '../utils/routes/routes_name.dart';
 import '../utils/utils.dart';
 
@@ -17,20 +16,13 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  final fireStore = FirebaseFirestore.instance.collection('users');
-
+  final FirebaseService _firebaseService = FirebaseService();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController _departmentDropdownController =
-      TextEditingController();
-  final TextEditingController _positionDropdownController =
-      TextEditingController();
-
+  final TextEditingController _departmentDropdownController = TextEditingController();
+  final TextEditingController _positionDropdownController = TextEditingController();
   String _imageUrl = '';
-  Utils utils = Utils();// Add a state variable to store the image URL
 
   @override
   void dispose() {
@@ -43,49 +35,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> _signUp() async {
-
     if (_formKey.currentState!.validate()) {
       showLoadingDialog(context, "loading...");
       try {
-        await auth
-            .createUserWithEmailAndPassword(
-          email: emailController.text.toString(),
-          password: passwordController.text.toString(),
-        ).then((value) {
-          utils.flashBarErrorMessage("Sign up successful", context);
-          Navigator.pushNamed(context, RoutesName.signInScreen);
-        }).onError((error, stackTrace) {
-          Utils utils = Utils();
-          utils.flashBarErrorMessage(error.toString(), context);
-        });
-        await storeData(); // Call storeData after successful sign-up
-      } on FirebaseAuthException catch (e) {
-        utils.flashBarErrorMessage(e.toString(), context);
+        await _firebaseService.signUp(
+          emailController.text.toString(),
+          passwordController.text.toString(),
+          nameController.text.toString(),
+          _departmentDropdownController.text.toString(),
+          _positionDropdownController.text.toString(),
+          _imageUrl,
+        );
+        Navigator.pushNamed(context, RoutesName.signInScreen);
       } catch (e) {
-       utils.flashBarErrorMessage(e.toString(), context);
+        Utils utils = Utils();
+        utils.flashBarErrorMessage(e.toString(), context);
       }
-    }
-  }
-
-  // Store user data in Firestore
-  Future<void> storeData() async {
-    if (auth.currentUser != null) {
-      String id = DateTime.now().millisecondsSinceEpoch.toString();
-      await fireStore.doc(auth.currentUser!.uid).set({
-        'Name': nameController.text.toString(),
-        'Email': emailController.text.toString(),
-        'Department': _departmentDropdownController.text.toString(),
-        'Position': _positionDropdownController.text.toString(),
-        'id': id,
-        'Password': passwordController.text.toString(),
-        'ImageURL': _imageUrl,
-      }).then((value) {
-      utils.flashBarErrorMessage("Sign up successful", context);
-      }).onError((error, stackTrace) {
-        utils.flashBarErrorMessage(error.toString(), context);
-      });
-    } else {
-      utils.flashBarErrorMessage("User not found", context);
     }
   }
 
@@ -96,8 +61,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
             child: Form(
               key: _formKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -153,8 +117,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your email';
                             }
-                            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                                .hasMatch(value)) {
+                            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                               return 'Please enter a valid email';
                             }
                             return null;
