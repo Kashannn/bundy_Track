@@ -1,5 +1,6 @@
 import 'package:bundy_track/Resourcess/Components/Colors.dart';
 import 'package:bundy_track/Resourcess/Components/widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -31,18 +32,30 @@ class _SignInScreenState extends State<SignInScreen> {
       showLoadingDialog(context, "Signing in..."); // Show loading indicator
 
       try {
-        await auth
-            .signInWithEmailAndPassword(
+        await auth.signInWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
-        )
-            .then((value) async {
+        ).then((value) async {
           _hideLoadingDialog();
-          Navigator.pushNamed(context, RoutesName.welcomeScreen);
+
+          var userDoc = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(value.user!.uid)
+              .get();
+
+          if (userDoc.exists) {
+            String role = userDoc.data()!['role'];
+
+            if (role == 'Employer') {
+              Navigator.pushNamed(context, RoutesName.home);
+            } else if (role == 'Employee') {
+              Navigator.pushNamed(context, RoutesName.welcomeScreen);
+            }
+          }
         }).onError((error, stackTrace) {
           _hideLoadingDialog(); // Hide loading indicator
           utils.flashBarErrorMessage(
-              "You have no account first Sign Up", context);
+              "You have no account, please sign up first", context);
         });
       } on FirebaseAuthException catch (e) {
         _hideLoadingDialog(); // Hide loading indicator
@@ -50,6 +63,8 @@ class _SignInScreenState extends State<SignInScreen> {
       }
     }
   }
+
+
 
   @override
   void dispose() {

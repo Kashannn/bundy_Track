@@ -1,14 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../Resourcess/Components/Colors.dart';
-import '../Resourcess/Components/imagePicker.dart';
 import '../Resourcess/Components/widget.dart';
 import '../provider/Welcome_provider.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({super.key});
+  const Profile({Key? key}) : super(key: key);
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -19,8 +17,15 @@ class _ProfileState extends State<Profile> {
 
   @override
   void initState() {
+
     super.initState();
     userProvider = Provider.of<UserProvider>(context, listen: false);
+    print('email: ${userProvider.email}');
+    print('department: ${userProvider.department}');
+    print('name: ${userProvider.userName}');
+    print('imageUrl: ${userProvider.userImageUrl}');
+    print('role: ${userProvider.role}');
+    print('position: ${userProvider.position}');
   }
 
   @override
@@ -54,13 +59,13 @@ class _ProfileState extends State<Profile> {
                             onTap: () {},
                             child: CircleAvatar(
                               radius:
-                                  15, // Adjust the size of the edit icon as needed
+                              15, // Adjust the size of the edit icon as needed
                               backgroundColor:
-                                  Colors.white, // Optional: background color
+                              Colors.white, // Optional: background color
                               child: Image.asset(
                                 'assets/images/Editphoto.png', // Path to your edit icon
                                 height:
-                                    20, // Adjust the size of the edit icon as needed
+                                20, // Adjust the size of the edit icon as needed
                               ),
                             ),
                           ),
@@ -85,8 +90,8 @@ class _ProfileState extends State<Profile> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Flutter Developer',
+                  Text(
+                    '${userProvider.department}',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -95,9 +100,9 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
               allText(text: 'Name'),
-              allTextField(hintText: 'Name'),
+              allTextField(hintText: '${userProvider.userName}',),
               allText(text: 'Email'),
-              allTextField(hintText: 'Email'),
+              allTextField(hintText: '${userProvider.email}'),
               allText(text: 'Password'),
               allTextField(hintText: 'Password'),
               allText(text: 'Department'),

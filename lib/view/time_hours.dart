@@ -79,7 +79,6 @@ class _TimeHoursState extends State<TimeHours> {
                                 }
                               });
                             },
-
                             activeColor: Colors.blue,
                             activeTrackColor: Colors.lightBlueAccent,
                           ),

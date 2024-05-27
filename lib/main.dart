@@ -1,3 +1,4 @@
+import 'package:bundy_track/provider/TabIndexProvider.dart';
 import 'package:bundy_track/provider/Welcome_provider.dart';
 import 'package:bundy_track/utils/routes/routes.dart';
 import 'package:bundy_track/utils/routes/routes_name.dart';
@@ -22,13 +23,14 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => TabIndexProvider()),
       ],
       child: Builder(
         builder: (context) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Bundy Track',
-            initialRoute: RoutesName.home,
+            initialRoute: RoutesName.signInScreen,
             onGenerateRoute: Routes.generateRoute,
           );
         },

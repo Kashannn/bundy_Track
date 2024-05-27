@@ -10,7 +10,7 @@ class FirebaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<bool> signUp(String email, String password, String name,
-      String department, String position, String imageUrl) async {
+      String department, String position, String imageUrl, String role) async {
     try {
       await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -26,6 +26,7 @@ class FirebaseService {
           'Position': position,
           'id': id,
           'ImageURL': imageUrl,
+          'role': role,
         });
         return true; // Sign up successful
       }
@@ -41,11 +42,31 @@ class FirebaseService {
       Utils utils = Utils();
       utils.flashBarErrorMessage("Log out successful", context);
       await Future.delayed(Duration(seconds: 1)); // Delay for 1 second
-      Navigator.pushNamedAndRemoveUntil(context, '/signInScreen', (route) => false);
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/signInScreen', (route) => false);
     } catch (error) {
-
       utils.flashBarErrorMessage("Sign out failed: $error", context);
     }
   }
+
+  Stream<QuerySnapshot> getEmployeesStream() {
+    return _firestore
+        .collection('users')
+        .where('role', isEqualTo: 'Employee')
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getEmployersStream() {
+    return _firestore
+        .collection('users')
+        .where('role', isEqualTo: 'Employer')
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getUsersStream() {
+    return _firestore.collection('users').snapshots();
+  }
+
+
 
 }

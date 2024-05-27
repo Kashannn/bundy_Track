@@ -23,6 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _departmentDropdownController = TextEditingController();
   final TextEditingController _positionDropdownController = TextEditingController();
   String _imageUrl = '';
+  String _role = '';
 
   @override
   void dispose() {
@@ -35,6 +36,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> _signUp() async {
+    // Check if all fields are valid
     if (_formKey.currentState!.validate()) {
       showLoadingDialog(context, "loading...");
       try {
@@ -45,6 +47,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           _departmentDropdownController.text.toString(),
           _positionDropdownController.text.toString(),
           _imageUrl,
+          _role,
         );
         Navigator.pushNamed(context, RoutesName.signInScreen);
       } catch (e) {
@@ -64,7 +67,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
             child: Form(
               key: _formKey,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
+              autovalidateMode: AutovalidateMode.disabled,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
@@ -107,6 +110,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your Name';
                             }
+                            return null;
                           },
                         ),
                         allText(text: 'Email'),
@@ -142,6 +146,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         DropButton(controller: _departmentDropdownController),
                         allText(text: 'Position'),
                         DropButton(controller: _positionDropdownController),
+                        allText(text: 'Role'),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CheckboxListTile(
+                                title: const Text('Employer'),
+                                value: _role == 'Employer',
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    if (value == true) {
+                                      _role = 'Employer';
+                                    } else {
+                                      _role = '';
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                            Expanded(
+                              child: CheckboxListTile(
+                                title: const Text('Employee'),
+                                value: _role == 'Employee',
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    if (value == true) {
+                                      _role = 'Employee';
+                                    } else {
+                                      _role = '';
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
                         SizedBox(height: 20),
                         allButton(
                           text: 'Sign Up',
@@ -162,8 +201,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                Navigator.pushNamed(
-                                    context, RoutesName.signInScreen);
+                                Navigator.pushNamed(context, RoutesName.signInScreen);
                               },
                               child: const Text(
                                 'Sign In',
@@ -186,5 +224,5 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
-  }
+}
 }
