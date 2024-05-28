@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Resourcess/Components/reuseableContainer.dart';
@@ -28,6 +29,7 @@ class _AllocatorScreenState extends State<AllocatorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
     return Scaffold(
       body: Column(
         children: [
@@ -38,7 +40,7 @@ class _AllocatorScreenState extends State<AllocatorScreen> {
           SizedBox(height: 30),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: _firestoreService.getEmployersStream(),
+              stream: _firestoreService.getRequestOvertimeStream(currentUserId),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
@@ -133,14 +135,18 @@ class _AllocatorScreenState extends State<AllocatorScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        setState(() {
-                          selectedEmployers.add(employer);
+                        selectedEmployers.add(employer);
+                        _firestoreService.addToSelectedRequest(employer.id, employerData)
+                            .then((_) {
+                          Navigator.pushNamed(
+                            context,
+                            RoutesName.overtime,
+                            arguments: selectedEmployers,
+                          );
+                        })
+                            .catchError((error) {
+                          print('Error adding to SelectedRequest: $error');
                         });
-                        Navigator.pushNamed(
-                          context,
-                          RoutesName.overtime,
-                          arguments: selectedEmployers,
-                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF34A853),
@@ -180,5 +186,6 @@ class _AllocatorScreenState extends State<AllocatorScreen> {
         ),
       ),
     );
-  }
+
+}
 }

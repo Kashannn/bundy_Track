@@ -67,6 +67,61 @@ class FirebaseService {
     return _firestore.collection('users').snapshots();
   }
 
+  Future<void> addSelectedEmployer(DocumentSnapshot employer) async {
+    await _firestore
+        .collection('selectedEmployers')
+        .doc(employer.id)
+        .set(employer.data() as Map<String, dynamic>);
+    await _firestore.collection('employers').doc(employer.id).delete();
+  }
 
+  Future<void> addToSelectedRequest(
+      String documentId, Map<String, dynamic>? data) async {
+    try {
+      await _firestore
+          .collection('SelectedRequest')
+          .doc(documentId)
+          .set(data ?? {});
+    } catch (e) {
+      print('Error adding to SelectedRequest: $e');
+    }
+  }
+
+  Stream<QuerySnapshot> getSelectedEmployers() {
+    return _firestore.collection('SelectedRequest').snapshots();
+  }
+
+  Future<DocumentSnapshot> getUserData(String uid) async {
+    return await _firestore.collection('users').doc(uid).get();
+  }
+
+  Future<void> removeSelectedEmployer(String documentId) async {
+    try {
+      print('Attempting to remove document with ID: $documentId');
+      await _firestore.collection('SelectedRequest').doc(documentId).delete();
+      print('Document removed successfully');
+    } catch (e) {
+      print('Error removing document: $e');
+    }
+  }
+
+  Future<void> requestOvertime(String employeeId, String name, String imageUrl,
+      int selectedHours, BuildContext context) async {
+    String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
+    await FirebaseFirestore.instance.collection('RequestOvertime').add({
+      'EmployerId': currentUserId,
+      'EmployeeId': employeeId,
+      'Name': name,
+      'ImageURL': imageUrl,
+      'selected_hours': selectedHours,
+      'request_time': FieldValue.serverTimestamp(),
+    });
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('Overtime request sent')));
+  }
+
+  Stream<QuerySnapshot> getRequestOvertimeStream(String currentUserId) {
+    return _firestore.collection('RequestOvertime').snapshots();
+  }
 
 }

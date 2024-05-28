@@ -1,10 +1,10 @@
-import 'package:bundy_track/Resourcess/Components/widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import '../Resourcess/Components/digitbutton.dart';
 import '../Resourcess/Components/reuseableContainer.dart';
+import '../Resourcess/Components/widget.dart';
 import '../firestore/firebase_service.dart';
 import '../provider/Welcome_provider.dart';
 
@@ -57,8 +57,7 @@ class _HomeState extends State<Home> {
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: _firestoreService.getEmployeesStream(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
                   }
@@ -71,14 +70,10 @@ class _HomeState extends State<Home> {
 
                   List<DocumentSnapshot> users = snapshot.data!.docs;
                   users.sort((a, b) {
-                    int selectedHoursA = (a.data() as Map<String, dynamic>?)
-                                ?.containsKey('selected_hours') ??
-                            false
+                    int selectedHoursA = (a.data() as Map<String, dynamic>?)?.containsKey('selected_hours') ?? false
                         ? a['selected_hours']
                         : 0;
-                    int selectedHoursB = (b.data() as Map<String, dynamic>?)
-                                ?.containsKey('selected_hours') ??
-                            false
+                    int selectedHoursB = (b.data() as Map<String, dynamic>?)?.containsKey('selected_hours') ?? false
                         ? b['selected_hours']
                         : 0;
                     return selectedHoursA.compareTo(selectedHoursB);
@@ -97,12 +92,9 @@ class _HomeState extends State<Home> {
                           );
                         }
                         String name = userData['Name'] ?? 'No Name';
-                        String imageUrl = userData['ImageURL'] ??
-                            'https://via.placeholder.com/150';
-                        int selectedHours =
-                            userData.containsKey('selected_hours')
-                                ? userData['selected_hours']
-                                : 0;
+                        String imageUrl = userData['ImageURL'] ?? 'https://via.placeholder.com/150';
+                        int selectedHours = userData.containsKey('selected_hours') ? userData['selected_hours'] : 0;
+                        String employerId = user.id;
 
                         return GestureDetector(
                           onTap: () {
@@ -142,7 +134,10 @@ class _HomeState extends State<Home> {
                                         SizedBox(height: 20),
                                         Center(
                                           child: allButton(
-                                            onPressed: _storeSelectedValue,
+                                            onPressed: () {
+                                              _storeSelectedValue();
+                                              _firestoreService.requestOvertime(employerId, name, imageUrl, selectedHours, context);
+                                            },
                                             text: 'Request OverTime',
                                           ),
                                         ),
@@ -163,17 +158,11 @@ class _HomeState extends State<Home> {
                               ),
                               title: Text(
                                 name,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                ),
+                                style: TextStyle(fontSize: 20, color: Colors.white),
                               ),
                               trailing: Text(
                                 '$selectedHours hours',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
+                                style: TextStyle(color: Colors.white, fontSize: 16),
                               ),
                               leading: CircleAvatar(
                                 backgroundImage: NetworkImage(imageUrl),
@@ -182,7 +171,6 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                         );
-
                       },
                     ),
                   );
@@ -194,4 +182,5 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
 }

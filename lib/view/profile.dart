@@ -17,15 +17,9 @@ class _ProfileState extends State<Profile> {
 
   @override
   void initState() {
-
     super.initState();
     userProvider = Provider.of<UserProvider>(context, listen: false);
-    print('email: ${userProvider.email}');
-    print('department: ${userProvider.department}');
-    print('name: ${userProvider.userName}');
-    print('imageUrl: ${userProvider.userImageUrl}');
-    print('role: ${userProvider.role}');
-    print('position: ${userProvider.position}');
+
   }
 
   @override

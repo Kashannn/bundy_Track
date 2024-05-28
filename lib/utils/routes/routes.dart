@@ -32,8 +32,7 @@ class Routes {
       case RoutesName.profile:
         return MaterialPageRoute(builder: (_) => const Profile());
       case RoutesName.overtime:
-        final List<DocumentSnapshot> selectedEmployers = settings.arguments as List<DocumentSnapshot>;
-        return MaterialPageRoute(builder: (context) => Overtime(selectedEmployers: selectedEmployers));
+        return MaterialPageRoute(builder: (_) =>  Overtime( ));
       case RoutesName.selectionScreen:
         return MaterialPageRoute(builder: (_) => const Selection());
       case RoutesName.bundled:
