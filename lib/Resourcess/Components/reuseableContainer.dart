@@ -52,7 +52,7 @@ class ReusableContainer extends StatelessWidget {
                       IconButton(
                         icon: Icon(Icons.arrow_back),
                         onPressed: () {
-                          // Add back button functionality here
+                          Navigator.pop(context);
                         },
                         color: Colors.white, // Change color if needed
                       ),

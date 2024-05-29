@@ -15,6 +15,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  Utils utils = Utils();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final FirebaseService _firebaseService = FirebaseService();
   final TextEditingController nameController = TextEditingController();
@@ -36,26 +37,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> _signUp() async {
-    // Check if all fields are valid
     if (_formKey.currentState!.validate()) {
       showLoadingDialog(context, "loading...");
       try {
-        await _firebaseService.signUp(
-          emailController.text.toString(),
-          passwordController.text.toString(),
-          nameController.text.toString(),
-          _departmentDropdownController.text.toString(),
-          _positionDropdownController.text.toString(),
+        bool value = await _firebaseService.signUp(
+          emailController.text.trim(),
+          passwordController.text.trim(),
+          nameController.text.trim(),
+          _departmentDropdownController.text.trim(),
+          _positionDropdownController.text.trim(),
           _imageUrl,
           _role,
         );
-        Navigator.pushNamed(context, RoutesName.signInScreen);
+        if (value) {
+          utils.flashBarErrorMessage('Sign up successful', context);
+          await Future.delayed(const Duration(seconds: 1));
+          Navigator.pushNamedAndRemoveUntil(context, RoutesName.signInScreen, (route) => false);
+        }
       } catch (e) {
-        Utils utils = Utils();
-        utils.flashBarErrorMessage(e.toString(), context);
+        utils.flashBarErrorMessage('Sign up failed: $e', context);
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

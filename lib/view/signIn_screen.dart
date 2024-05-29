@@ -3,7 +3,9 @@ import 'package:bundy_track/Resourcess/Components/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../provider/Welcome_provider.dart';
 import '../utils/routes/routes_name.dart';
 import '../utils/utils.dart';
 
@@ -21,22 +23,23 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController passwordController = TextEditingController();
   Utils utils = Utils();
 
-  // Hide loading indicator
   void _hideLoadingDialog() {
     Navigator.of(context).pop();
   }
 
-  // Code to sign in to Firebase
   void _signIn() async {
     if (_formKey.currentState!.validate()) {
       showLoadingDialog(context, "Signing in..."); // Show loading indicator
 
       try {
-        await auth.signInWithEmailAndPassword(
+        await auth
+            .signInWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
-        ).then((value) async {
+        )
+            .then((value) async {
           _hideLoadingDialog();
+          Provider.of<UserProvider>(context, listen: false).fetchUserData();
 
           var userDoc = await FirebaseFirestore.instance
               .collection('users')
@@ -63,8 +66,6 @@ class _SignInScreenState extends State<SignInScreen> {
       }
     }
   }
-
-
 
   @override
   void dispose() {

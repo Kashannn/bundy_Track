@@ -1,5 +1,6 @@
 import 'package:bundy_track/Resourcess/Components/stopwatch.dart';
 import 'package:bundy_track/Resourcess/Components/widget.dart';
+import 'package:bundy_track/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class _CustomTabBarState extends State<CustomTabBar>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _selectedValue = 0;
+  Utils utils = Utils();
 
   @override
   void initState() {
@@ -44,7 +46,11 @@ class _CustomTabBarState extends State<CustomTabBar>
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     await users.doc(userId).set({
       'selected_hours': _selectedValue,
-    }, SetOptions(merge: true));
+    }, SetOptions(merge: true)).then((value) {
+      utils.flashBarErrorMessage('Hours stored successfully', context);
+    }).catchError((error) {
+      print('Failed to store hours: $error');
+    });
   }
 
   void _onValueChanged(int value) {

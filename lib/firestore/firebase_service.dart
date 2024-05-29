@@ -67,28 +67,49 @@ class FirebaseService {
     return _firestore.collection('users').snapshots();
   }
 
-
-
   Future<DocumentSnapshot> getUserData(String uid) async {
     return await _firestore.collection('users').doc(uid).get();
   }
 
-
-
-  Future<void> requestOvertime(String employeeId, int selectedValue, BuildContext context) async {
+  Future<void> requestOvertime(
+      String employeeId, int selectedValue, BuildContext context) async {
     String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
-    DocumentSnapshot currentUserDoc = await FirebaseFirestore.instance.collection('users').doc(currentUserId).get();
-    Map<String, dynamic>? currentUserData = currentUserDoc.data() as Map<String, dynamic>?;
+    DocumentSnapshot currentUserDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .get();
+    Map<String, dynamic>? currentUserData =
+    currentUserDoc.data() as Map<String, dynamic>?;
 
     if (currentUserData != null) {
-      await FirebaseFirestore.instance.collection('RequestOvertime').add({
-        'EmployerId': currentUserId,
-        'EmployerName': currentUserData['Name'] ?? '',
-        'EmployerImageURL': currentUserData['ImageURL'] ?? '',
-        'EmployeeId': employeeId,
-        'selected_hours': selectedValue,
-        'request_time': FieldValue.serverTimestamp(),
-      });
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('RequestOvertime')
+          .where('EmployerId', isEqualTo: currentUserId)
+          .where('EmployeeId', isEqualTo: employeeId)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        try {
+          await FirebaseFirestore.instance.collection('RequestOvertime').add({
+            'EmployerId': currentUserId,
+            'EmployerName': currentUserData['Name'] ?? '',
+            'EmployerImageURL': currentUserData['ImageURL'] ?? '',
+            'EmployeeId': employeeId,
+            'selected_hours': selectedValue,
+            'request_time': FieldValue.serverTimestamp(),
+          });
+          Utils().flashBarErrorMessage('Request sent successfully', context);
+          await Future.delayed(Duration(seconds: 1));
+          Navigator.pop(context);
+        } catch (error) {
+          Utils()
+              .flashBarErrorMessage('Failed to send request: $error', context);
+        }
+      } else {
+        Utils().flashBarErrorMessage('Request already sent', context);
+        await Future.delayed(Duration(milliseconds: 700));
+        Navigator.pop(context);
+      }
     }
   }
 
@@ -125,5 +146,4 @@ class FirebaseService {
         .where('employeeId', isEqualTo: currentUserId)
         .snapshots();
   }
-
 }

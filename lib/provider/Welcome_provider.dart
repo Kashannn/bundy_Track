@@ -31,10 +31,10 @@ class UserProvider with ChangeNotifier {
   bool get isSwitched => _isSwitched;
 
   UserProvider() {
-    _fetchUserData();
+    fetchUserData();
   }
 
-  Future<void> _fetchUserData() async {
+  Future<void> fetchUserData() async {
     User? currentUser = _auth.currentUser;
     if (currentUser != null) {
       DocumentSnapshot userDoc =

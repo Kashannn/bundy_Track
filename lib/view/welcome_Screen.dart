@@ -5,9 +5,7 @@ import '../provider/Welcome_provider.dart';
 import '../utils/routes/routes_name.dart';
 
 class WelcomeScreen extends StatelessWidget {
-
   @override
-
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -58,7 +56,6 @@ class WelcomeScreen extends StatelessWidget {
                                       break;
                                     case 'Logout':
                                       userProvider.signOut( context);
-
                                       break;
                                   }
                                 },
