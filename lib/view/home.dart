@@ -19,15 +19,6 @@ class _HomeState extends State<Home> {
   int _selectedValue = 0;
   late UserProvider userProvider;
   final FirebaseService _firestoreService = FirebaseService();
-  late Map<String, dynamic> _selectedUserData;
-
-  Future<void> _storeSelectedValue() async {
-    String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    await users.doc(userId).set({
-      'selected_hours': _selectedValue,
-    }, SetOptions(merge: true));
-  }
 
   void _onValueChanged(int value) {
     setState(() {
@@ -94,11 +85,10 @@ class _HomeState extends State<Home> {
                         String name = userData['Name'] ?? 'No Name';
                         String imageUrl = userData['ImageURL'] ?? 'https://via.placeholder.com/150';
                         int selectedHours = userData.containsKey('selected_hours') ? userData['selected_hours'] : 0;
-                        String employerId = user.id;
+                        String employeeId = user.id;
 
                         return GestureDetector(
                           onTap: () {
-                            _selectedUserData = userData;
                             showModalBottomSheet(
                               context: context,
                               builder: (BuildContext context) {
@@ -135,8 +125,7 @@ class _HomeState extends State<Home> {
                                         Center(
                                           child: allButton(
                                             onPressed: () {
-                                              _storeSelectedValue();
-                                              _firestoreService.requestOvertime(employerId, name, imageUrl, selectedHours, context);
+                                              _firestoreService.requestOvertime(employeeId, _selectedValue, context);
                                             },
                                             text: 'Request OverTime',
                                           ),
@@ -182,5 +171,4 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
 }

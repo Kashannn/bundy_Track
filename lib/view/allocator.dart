@@ -41,7 +41,8 @@ class _AllocatorScreenState extends State<AllocatorScreen> {
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: _firestoreService.getRequestOvertimeStream(currentUserId),
-              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 }
@@ -64,9 +65,13 @@ class _AllocatorScreenState extends State<AllocatorScreen> {
                         title: Text('No data available'),
                       );
                     }
-                    String name = employerData['Name'] ?? 'No Name';
-                    String imageUrl = employerData['ImageURL'] ?? 'https://via.placeholder.com/150';
-                    int selectedHours = employerData.containsKey('selected_hours') ? employerData['selected_hours'] : 0;
+                    String name = employerData['EmployerName'] ?? 'No Name';
+                    String imageUrl = employerData['EmployerImageURL'] ??
+                        'https://via.placeholder.com/150';
+                    int selectedHours =
+                        employerData.containsKey('selected_hours')
+                            ? employerData['selected_hours']
+                            : 0;
 
                     return GestureDetector(
                       onTap: () {
@@ -115,7 +120,12 @@ class _AllocatorScreenState extends State<AllocatorScreen> {
 
   Widget _buildExpandedItem(int index, DocumentSnapshot employer) {
     var employerData = employer.data() as Map<String, dynamic>?;
-    String name = employerData?['Name'] ?? 'No Name';
+    String name = employerData?['EmployerName'] ?? 'No Name';
+    String imageUrl =
+        employerData?['EmployerImageURL'] ?? 'https://via.placeholder.com/150';
+    int selectedHours = employerData?['selected_hours'] ?? 0;
+    String employerId = employerData?['EmployerId'] ?? '';
+    String employeeId = employerData?['EmployeeId'] ?? '';
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
@@ -135,18 +145,14 @@ class _AllocatorScreenState extends State<AllocatorScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        selectedEmployers.add(employer);
-                        _firestoreService.addToSelectedRequest(employer.id, employerData)
-                            .then((_) {
-                          Navigator.pushNamed(
-                            context,
-                            RoutesName.overtime,
-                            arguments: selectedEmployers,
-                          );
-                        })
-                            .catchError((error) {
-                          print('Error adding to SelectedRequest: $error');
-                        });
+                        _firestoreService.addSelectedRequest(
+                          employerId: employerId,
+                          employeeId: employeeId,
+                          name: name,
+                          imageUrl: imageUrl,
+                          selectedHours: selectedHours,
+                        );
+                        Navigator.pushNamed(context, RoutesName.overtime);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF34A853),
@@ -186,6 +192,6 @@ class _AllocatorScreenState extends State<AllocatorScreen> {
         ),
       ),
     );
+  }
 
-}
 }

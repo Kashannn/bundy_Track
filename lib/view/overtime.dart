@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../Resourcess/Components/reuseableContainer.dart';
 import '../firestore/firebase_service.dart';
 import '../provider/Welcome_provider.dart';
@@ -10,10 +10,10 @@ class Overtime extends StatefulWidget {
   const Overtime({super.key});
 
   @override
-  State<Overtime> createState() => OvertimeState();
+  State<Overtime> createState() => _OvertimeState();
 }
 
-class OvertimeState extends State<Overtime> {
+class _OvertimeState extends State<Overtime> {
   late UserProvider userProvider;
   final FirebaseService _firestoreService = FirebaseService();
 
@@ -25,6 +25,8 @@ class OvertimeState extends State<Overtime> {
 
   @override
   Widget build(BuildContext context) {
+    String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
+
     return Scaffold(
       body: Column(
         children: [
@@ -35,8 +37,9 @@ class OvertimeState extends State<Overtime> {
           SizedBox(height: 30),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: _firestoreService.getSelectedEmployers(),
-              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              stream: _firestoreService.getAddSelectedRequest(currentUserId),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 }
@@ -44,67 +47,56 @@ class OvertimeState extends State<Overtime> {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 }
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return Center(child: Text('No employees found'));
+                  return Center(child: Text('No employers found'));
                 }
 
-                List<DocumentSnapshot> users = snapshot.data!.docs;
+                List<DocumentSnapshot> employers = snapshot.data!.docs;
 
-                return Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: ListView.builder(
-                    itemCount: users.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      var user = users[index];
-                      var userData = user.data() as Map<String, dynamic>?;
-                      if (userData == null) {
-                        return ListTile(
-                          title: Text('No data available'),
-                        );
-                      }
-                      String name = userData['Name'] ?? 'No Name';
-                      String imageUrl = userData['ImageURL'] ?? 'https://via.placeholder.com/150';
-                      int selectedHours = userData.containsKey('selected_hours')
-                          ? userData['selected_hours']
-                          : 0;
+                return ListView.builder(
+                  itemCount: employers.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    var employer = employers[index];
+                    var employerData = employer.data() as Map<String, dynamic>?;
 
-                      return Padding(
-                        padding: const EdgeInsets.all(10.0),
+                    if (employerData == null) {
+                      return ListTile(
+                        title: Text('No data available'),
+                      );
+                    }
+
+                    String name = employerData['name'] ?? 'No Name';
+                    String imageUrl = employerData['imageUrl'] ??
+                        'https://via.placeholder.com/150';
+                    int selectedHours =
+                        employerData.containsKey('selected_hours')
+                            ? employerData['selected_hours']
+                            : 0;
+
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(10),
+                          color: const Color(0xFF34A853),
+                        ),
                         child: ListTile(
-                          tileColor: Color(0xFF34A853),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: BorderSide(width: 1),
-                          ),
-                          title: Text(
-                            name,
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                            ),
+                          title: Text(name),
+                          leading: CircleAvatar(
+                            radius: 25,
+                            backgroundImage: NetworkImage(imageUrl),
                           ),
                           trailing: IconButton(
                             icon: Icon(Icons.delete),
                             onPressed: () {
-                              // Delete the document and update the state
-                              _firestoreService.removeSelectedEmployer(user.id);
-                              setState(() {}); // Force rebuild
+                              employer.reference.delete();
                             },
                           ),
-                          subtitle: Text(
-                            'Overtime',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
-                          leading: CircleAvatar(
-                            backgroundImage: NetworkImage(imageUrl),
-                            backgroundColor: Colors.white,
-                          ),
+                          subtitle: Text("Overtime Request"),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 );
               },
             ),

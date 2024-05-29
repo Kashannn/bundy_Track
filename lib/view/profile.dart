@@ -19,18 +19,14 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     userProvider = Provider.of<UserProvider>(context, listen: false);
-
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+        body: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 30),
@@ -93,29 +89,40 @@ class _ProfileState extends State<Profile> {
                   ),
                 ],
               ),
-              allText(text: 'Name'),
-              allTextField(hintText: '${userProvider.userName}',),
-              allText(text: 'Email'),
-              allTextField(hintText: '${userProvider.email}'),
-              allText(text: 'Password'),
-              allTextField(hintText: 'Password'),
-              allText(text: 'Department'),
-              allDropdownButton(
-                items: ['Department', 'Finance', 'Marketing'],
-                value: 'Department',
-                onChanged: (String? value) {},
-              ),
-              allText(text: 'Position'),
-              allDropdownButton(
-                items: ['Position', 'Finance', 'Marketing'],
-                value: 'Position',
-                onChanged: (String? value) {},
-              ),
-              allButton(
-                text: 'Save',
-                onPressed: () {
-                  Navigator.pushNamed(context, '/Allocator');
-                },
+              Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    allText(text: 'Name'),
+                    allTextField(
+                      hintText: '${userProvider.userName}',
+                    ),
+                    allText(text: 'Email'),
+                    allTextField(hintText: '${userProvider.email}'),
+                    allText(text: 'Password'),
+                    allTextField(hintText: 'Password'),
+                    allText(text: 'Department'),
+                    allDropdownButton(
+                      items: ['Department', 'Finance', 'Marketing'],
+                      value: 'Department',
+                      onChanged: (String? value) {},
+                    ),
+                    allText(text: 'Position'),
+                    allDropdownButton(
+                      items: ['Position', 'Finance', 'Marketing'],
+                      value: 'Position',
+                      onChanged: (String? value) {},
+                    ),
+                    allButton(
+                      text: 'Save',
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/Allocator');
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

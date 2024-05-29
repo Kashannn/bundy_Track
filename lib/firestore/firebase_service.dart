@@ -67,61 +67,63 @@ class FirebaseService {
     return _firestore.collection('users').snapshots();
   }
 
-  Future<void> addSelectedEmployer(DocumentSnapshot employer) async {
-    await _firestore
-        .collection('selectedEmployers')
-        .doc(employer.id)
-        .set(employer.data() as Map<String, dynamic>);
-    await _firestore.collection('employers').doc(employer.id).delete();
-  }
 
-  Future<void> addToSelectedRequest(
-      String documentId, Map<String, dynamic>? data) async {
-    try {
-      await _firestore
-          .collection('SelectedRequest')
-          .doc(documentId)
-          .set(data ?? {});
-    } catch (e) {
-      print('Error adding to SelectedRequest: $e');
-    }
-  }
-
-  Stream<QuerySnapshot> getSelectedEmployers() {
-    return _firestore.collection('SelectedRequest').snapshots();
-  }
 
   Future<DocumentSnapshot> getUserData(String uid) async {
     return await _firestore.collection('users').doc(uid).get();
   }
 
-  Future<void> removeSelectedEmployer(String documentId) async {
-    try {
-      print('Attempting to remove document with ID: $documentId');
-      await _firestore.collection('SelectedRequest').doc(documentId).delete();
-      print('Document removed successfully');
-    } catch (e) {
-      print('Error removing document: $e');
+
+
+  Future<void> requestOvertime(String employeeId, int selectedValue, BuildContext context) async {
+    String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
+    DocumentSnapshot currentUserDoc = await FirebaseFirestore.instance.collection('users').doc(currentUserId).get();
+    Map<String, dynamic>? currentUserData = currentUserDoc.data() as Map<String, dynamic>?;
+
+    if (currentUserData != null) {
+      await FirebaseFirestore.instance.collection('RequestOvertime').add({
+        'EmployerId': currentUserId,
+        'EmployerName': currentUserData['Name'] ?? '',
+        'EmployerImageURL': currentUserData['ImageURL'] ?? '',
+        'EmployeeId': employeeId,
+        'selected_hours': selectedValue,
+        'request_time': FieldValue.serverTimestamp(),
+      });
     }
   }
 
-  Future<void> requestOvertime(String employeeId, String name, String imageUrl,
-      int selectedHours, BuildContext context) async {
-    String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
-    await FirebaseFirestore.instance.collection('RequestOvertime').add({
-      'EmployerId': currentUserId,
-      'EmployeeId': employeeId,
-      'Name': name,
-      'ImageURL': imageUrl,
-      'selected_hours': selectedHours,
-      'request_time': FieldValue.serverTimestamp(),
-    });
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('Overtime request sent')));
+  Stream<QuerySnapshot> getRequestOvertimeStream(String currentUserId) {
+    return _firestore
+        .collection('RequestOvertime')
+        .where('EmployeeId', isEqualTo: currentUserId)
+        .snapshots();
   }
 
-  Stream<QuerySnapshot> getRequestOvertimeStream(String currentUserId) {
-    return _firestore.collection('RequestOvertime').snapshots();
+  Future<void> addSelectedRequest({
+    required String employerId,
+    required String employeeId,
+    required String name,
+    required String imageUrl,
+    required int selectedHours,
+  }) async {
+    try {
+      await _firestore.collection('SelectedRequest').doc().set({
+        'employerId': employerId,
+        'employeeId': employeeId,
+        'name': name,
+        'imageUrl': imageUrl,
+        'selectedHours': selectedHours,
+      });
+    } catch (e) {
+      print('Error adding selected request: $e');
+    }
+  }
+
+  Stream<QuerySnapshot> getAddSelectedRequest(String currentUserId) {
+    return _firestore
+        .collection('SelectedRequest')
+        .where('employeeId', isEqualTo: currentUserId)
+        .snapshots();
   }
 
 }
