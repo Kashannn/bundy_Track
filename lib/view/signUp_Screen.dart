@@ -188,7 +188,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                               ),
                               Container(
-                                height: 30,
+                                height: 40,
                                 child: VerticalDivider(
                                   color: Colors.grey,
                                   thickness: 1,
@@ -205,6 +205,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   },
                                 ),
                               ),
+
                             ],
                           ),
                         ),

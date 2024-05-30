@@ -61,6 +61,11 @@ class WelcomeScreen extends StatelessWidget {
                                         break;
                                       case 'Logout':
                                         userProvider.signOut(context);
+                                        break;
+                                      case 'SelectHours':
+                                        Navigator.pushNamed(
+                                            context, RoutesName.overtime);
+                                        break;
                                     }
                                   },
                                   itemBuilder: (BuildContext context) =>
@@ -79,6 +84,13 @@ class WelcomeScreen extends StatelessWidget {
                                         title: Text('TimeHours Request'),
                                       ),
                                     ),
+                                        const PopupMenuItem<String>(
+                                          value: 'SelectHours',
+                                          child: ListTile(
+                                            leading: Icon(Icons.workspace_premium),
+                                            title: Text('Selected Request'),
+                                          ),
+                                        ),
                                     const PopupMenuItem<String>(
                                       value: 'Logout',
                                       child: ListTile(

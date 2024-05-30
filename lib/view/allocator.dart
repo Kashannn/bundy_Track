@@ -41,7 +41,8 @@ class _AllocatorScreenState extends State<AllocatorScreen> {
             SizedBox(height: 30),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: _firestoreService.getRequestOvertimeStream(currentUserId),
+                stream:
+                    _firestoreService.getRequestOvertimeStream(currentUserId),
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -60,7 +61,8 @@ class _AllocatorScreenState extends State<AllocatorScreen> {
                     itemCount: employers.length,
                     itemBuilder: (BuildContext context, int index) {
                       var employer = employers[index];
-                      var employerData = employer.data() as Map<String, dynamic>?;
+                      var employerData =
+                          employer.data() as Map<String, dynamic>?;
                       if (employerData == null) {
                         return ListTile(
                           title: Text('No data available'),
@@ -77,7 +79,8 @@ class _AllocatorScreenState extends State<AllocatorScreen> {
                       return GestureDetector(
                         onTap: () {
                           setState(() {
-                            _expandedIndex = _expandedIndex == index ? -1 : index;
+                            _expandedIndex =
+                                _expandedIndex == index ? -1 : index;
                           });
                         },
                         child: _expandedIndex == index
@@ -154,6 +157,7 @@ class _AllocatorScreenState extends State<AllocatorScreen> {
                           imageUrl: imageUrl,
                           selectedHours: selectedHours,
                         );
+                        employer.reference.delete();
                         Navigator.pushNamed(context, RoutesName.overtime);
                       },
                       style: ElevatedButton.styleFrom(
@@ -177,14 +181,19 @@ class _AllocatorScreenState extends State<AllocatorScreen> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        employer.reference.delete();
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFFEA4335),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
                       ),
-                      child: Text('No', style: TextStyle(color: Colors.white)),
+                      child: Text(
+                        'No',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ],
                 ),
@@ -195,5 +204,4 @@ class _AllocatorScreenState extends State<AllocatorScreen> {
       ),
     );
   }
-
 }
