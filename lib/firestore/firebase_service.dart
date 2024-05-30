@@ -36,18 +36,6 @@ class FirebaseService {
     }
   }
 
-  Future<void> signOut(BuildContext context) async {
-    try {
-      await _auth.signOut();
-      Utils utils = Utils();
-      utils.flashBarErrorMessage("Log out successful", context);
-      await Future.delayed(Duration(seconds: 1)); // Delay for 1 second
-      Navigator.pushNamedAndRemoveUntil(
-          context, '/signInScreen', (route) => false);
-    } catch (error) {
-      utils.flashBarErrorMessage("Sign out failed: $error", context);
-    }
-  }
 
   Stream<QuerySnapshot> getEmployeesStream() {
     return _firestore
@@ -146,4 +134,6 @@ class FirebaseService {
         .where('employeeId', isEqualTo: currentUserId)
         .snapshots();
   }
+
+
 }

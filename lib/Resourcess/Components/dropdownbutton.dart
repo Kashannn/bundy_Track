@@ -39,7 +39,9 @@ class _DropButtonState extends State<DropButton> {
 
               });
             },
-           // Add the icon here
+
+            dropdownColor: AppColors.textFieldColor,
+            icon: const Icon(Icons.arrow_drop_down),
           ),
         ),
       ],

@@ -21,7 +21,7 @@ class ReusableContainer extends StatelessWidget {
           bottomRight: Radius.circular(20),
         ),
       ),
-      height: 313,
+      height: 300,
       width: double.infinity,
       child: Stack(
         children: [

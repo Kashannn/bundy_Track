@@ -21,8 +21,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController _departmentDropdownController = TextEditingController();
-  final TextEditingController _positionDropdownController = TextEditingController();
+  final TextEditingController departmentController = TextEditingController();
+  final TextEditingController positionController = TextEditingController();
   String _imageUrl = '';
   String _role = '';
 
@@ -31,8 +31,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
-    _departmentDropdownController.dispose();
-    _positionDropdownController.dispose();
+     departmentController.dispose();
+    positionController.dispose();
     super.dispose();
   }
 
@@ -41,11 +41,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
       showLoadingDialog(context, "loading...");
       try {
         bool value = await _firebaseService.signUp(
-          emailController.text.trim(),
-          passwordController.text.trim(),
-          nameController.text.trim(),
-          _departmentDropdownController.text.trim(),
-          _positionDropdownController.text.trim(),
+          emailController.text.toString(),
+          passwordController.text.toString(),
+          nameController.text.toString(),
+          departmentController.text.toString(),
+          positionController.text.toString(),
           _imageUrl,
           _role,
         );
@@ -99,12 +99,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         allText(text: 'add profile photo'),
-                        ImagePickerWidget(
-                          onImagePicked: (String imageUrl) {
-                            setState(() {
-                              _imageUrl = imageUrl;
-                            });
-                          },
+                        Container(
+                          decoration: BoxDecoration(
+                           border: Border.all(color: Colors.grey, width: 1),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: ImagePickerWidget(
+                            onImagePicked: (String imageUrl) {
+                              setState(() {
+                                _imageUrl = imageUrl;
+                              });
+                            },
+                          ),
                         ),
                         allText(text: 'Name'),
                         allTextField(
@@ -147,44 +153,62 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           },
                         ),
                         allText(text: 'Department'),
-                        DropButton(controller: _departmentDropdownController),
-                        allText(text: 'Position'),
-                        DropButton(controller: _positionDropdownController),
-                        allText(text: 'Role'),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: CheckboxListTile(
-                                title: const Text('Employer'),
-                                value: _role == 'Employer',
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    if (value == true) {
-                                      _role = 'Employer';
-                                    } else {
-                                      _role = '';
-                                    }
-                                  });
-                                },
-                              ),
-                            ),
-                            Expanded(
-                              child: CheckboxListTile(
-                                title: const Text('Employee'),
-                                value: _role == 'Employee',
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    if (value == true) {
-                                      _role = 'Employee';
-                                    } else {
-                                      _role = '';
-                                    }
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
+                        allDropdownButton(
+                          items: ['Flutter', 'Web', 'Android', 'iOS'],
+                          value: 'Flutter',
+                          onChanged: (value) {
+                          departmentController.text = value!;
+                          },
                         ),
+                        allText(text: 'Position'),
+                        allDropdownButton(
+                          items: ['Developer', 'Designer', 'Manager', 'Intern'],
+                          value: 'Developer',
+                          onChanged: (value) {
+                            positionController.text = value!;
+                          },
+                        ),
+                        allText(text: 'Role'),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey, width: 1),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: CheckboxListTile(
+                                  title: const Text('Employer'),
+                                  value: _role == 'Employer',
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      _role = value == true ? 'Employer' : '';
+                                    });
+                                  },
+                                ),
+                              ),
+                              Container(
+                                height: 30,
+                                child: VerticalDivider(
+                                  color: Colors.grey,
+                                  thickness: 1,
+                                ),
+                              ),
+                              Flexible(
+                                child: CheckboxListTile(
+                                  title: const Text('Employee'),
+                                  value: _role == 'Employee',
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      _role = value == true ? 'Employee' : '';
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
                         SizedBox(height: 20),
                         allButton(
                           text: 'Sign Up',

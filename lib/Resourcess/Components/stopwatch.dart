@@ -57,7 +57,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
                 },
               ),
               Text(
-                '${widget.labelText}:',
+                '${widget.labelText}',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

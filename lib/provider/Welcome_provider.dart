@@ -1,3 +1,4 @@
+import 'package:bundy_track/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -38,7 +39,7 @@ class UserProvider with ChangeNotifier {
     User? currentUser = _auth.currentUser;
     if (currentUser != null) {
       DocumentSnapshot userDoc =
-      await _firestore.collection('users').doc(currentUser.uid).get();
+          await _firestore.collection('users').doc(currentUser.uid).get();
       Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
       _userName = userData['Name'] ?? '';
       _userImageUrl = userData['ImageURL'] ?? '';
@@ -52,6 +53,64 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  set userName(String name) {
+    _userName = name;
+    notifyListeners();
+  }
+
+  set userImageUrl(String url) {
+    _userImageUrl = url;
+    notifyListeners();
+  }
+
+  set password(String pass) {
+    _password = pass;
+    notifyListeners();
+  }
+
+  set position(String pos) {
+    _position = pos;
+    notifyListeners();
+  }
+
+  set department(String dept) {
+    _department = dept;
+    notifyListeners();
+  }
+
+  set email(String mail) {
+    _email = mail;
+    notifyListeners();
+  }
+
+  set selectedHours(int hours) {
+    _selectedHours = hours;
+    notifyListeners();
+  }
+
+  set role(String r) {
+    _role = r;
+    notifyListeners();
+  }
+
+  set usersList(List<Map<String, dynamic>> users) {
+    _usersList = users;
+    notifyListeners();
+  }
+
+  User? getCurrentUser() {
+    return _auth.currentUser;
+  }
+
+  void updateUserData(
+      String name, String department, String position, String imageUrl) {
+    _userName = name;
+    _department = department;
+    _position = position;
+    _userImageUrl = imageUrl;
+    notifyListeners();
+  }
+
   void toggleSwitch(bool value) {
     _isSwitched = value;
     notifyListeners();
@@ -59,7 +118,10 @@ class UserProvider with ChangeNotifier {
 
   Future<void> signOut(BuildContext context) async {
     try {
-      await _auth.signOut();
+      await _auth
+          .signOut()
+          .then((value) => Utils.toastMessage('Log out successful'));
+      await Future.delayed(Duration(seconds: 1));
       Navigator.pushNamed(context, '/signInScreen');
     } catch (error) {
       print('Sign out failed: $error');
@@ -67,3 +129,18 @@ class UserProvider with ChangeNotifier {
   }
 }
 
+Future<bool> updateUserRecord(String uid, String name, String department,
+    String position, String imageUrl) async {
+  try {
+    await FirebaseFirestore.instance.collection('users').doc(uid).update({
+      'Name': name,
+      'Department': department,
+      'Position': position,
+      'ImageURL': imageUrl,
+    });
+    return true;
+  } catch (e) {
+    print('Error updating user record: $e');
+    return false;
+  }
+}

@@ -1,7 +1,9 @@
+import 'package:bundy_track/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../Resourcess/Components/Colors.dart';
+import '../Resourcess/Components/imagePicker.dart';
 import '../Resourcess/Components/widget.dart';
 import '../provider/Welcome_provider.dart';
 
@@ -14,11 +16,28 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   late UserProvider userProvider;
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController departmentController = TextEditingController();
+  final TextEditingController positionController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  final List<String> positions = ['Position', 'Finance', 'Marketing'];
 
   @override
   void initState() {
     super.initState();
     userProvider = Provider.of<UserProvider>(context, listen: false);
+    nameController.text = userProvider.userName;
+    departmentController.text = userProvider.department;
+    positionController.text = userProvider.position;
+    emailController.text = userProvider.email;
+  }
+
+  void _updateUserImage(String imageUrl) {
+    setState(() {
+      userProvider.userImageUrl = imageUrl;
+    });
   }
 
   @override
@@ -46,22 +65,28 @@ class _ProfileState extends State<Profile> {
                           right: 0,
                           bottom: 0,
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return ImagePickerWidget(
+                                    onImagePicked: _updateUserImage,
+                                  );
+                                },
+                              );
+                            },
                             child: CircleAvatar(
-                              radius:
-                              15, // Adjust the size of the edit icon as needed
-                              backgroundColor:
-                              Colors.white, // Optional: background color
+                              radius: 15,
+                              backgroundColor: Colors.white,
                               child: Image.asset(
-                                'assets/images/Editphoto.png', // Path to your edit icon
-                                height:
-                                20, // Adjust the size of the edit icon as needed
+                                'assets/images/Editphoto.png',
+                                height: 20,
                               ),
                             ),
                           ),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -81,7 +106,7 @@ class _ProfileState extends State<Profile> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '${userProvider.department}',
+                    '${userProvider.position}',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -89,36 +114,64 @@ class _ProfileState extends State<Profile> {
                   ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.7,
+                margin: const EdgeInsets.only(top: 20),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     allText(text: 'Name'),
                     allTextField(
-                      hintText: '${userProvider.userName}',
+                      hintText: 'Name',
+                      controller: nameController,
                     ),
                     allText(text: 'Email'),
-                    allTextField(hintText: '${userProvider.email}'),
+                    allTextField(
+                      hintText: 'Email',
+                      controller: emailController,
+                      readOnly: true,
+                    ),
                     allText(text: 'Password'),
-                    allTextField(hintText: 'Password'),
-                    allText(text: 'Department'),
-                    allDropdownButton(
-                      items: ['Department', 'Finance', 'Marketing'],
-                      value: 'Department',
-                      onChanged: (String? value) {},
+                    allTextField(
+                      hintText: 'Password',
+                      controller: passwordController,
+                      obscureText: true,
                     ),
                     allText(text: 'Position'),
                     allDropdownButton(
-                      items: ['Position', 'Finance', 'Marketing'],
-                      value: 'Position',
-                      onChanged: (String? value) {},
+                      items: positions,
+                      value: positions.contains(userProvider.position)
+                          ? userProvider.position
+                          : positions[0],
+                      onChanged: (String? value) {
+                        setState(() {
+                          positionController.text = value!;
+                          userProvider.position = value;
+                        });
+                      },
                     ),
                     allButton(
                       text: 'Save',
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/Allocator');
+                      onPressed: () async {
+                        bool success = await updateUserRecord(
+                          userProvider.getCurrentUser()!.uid,
+                          nameController.text,
+                          departmentController.text,
+                          positionController.text,
+                          userProvider.userImageUrl,
+                        );
+                        if (success) {
+                          userProvider.updateUserData(
+                            nameController.text,
+                            departmentController.text,
+                            positionController.text,
+                            userProvider.userImageUrl,
+                          );
+                          Utils.toastMessage('Profile updated successfully');
+                          Navigator.pop(context);
+                        }
                       },
                     ),
                   ],

@@ -6,8 +6,10 @@ Widget allTextField({
   required String hintText,
   TextInputType keyboardType = TextInputType.text,
   bool obscureText = false,
+  bool readOnly = false,
   TextEditingController? controller,
   String? Function(String?)? validator,
+
 }) {
   return TextFormField(
     decoration: InputDecoration(
@@ -18,7 +20,12 @@ Widget allTextField({
         fontSize: 16,
         fontFamily: 'Poppins',
       ),
-      border: InputBorder.none,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        borderSide: BorderSide(
+          color: Colors.grey.shade400,
+        ),
+      ),
     ),
     keyboardType: keyboardType,
     obscureText: obscureText,
@@ -80,12 +87,13 @@ Widget allDropdownButton({
   return Container(
     width: double.infinity,
     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-    decoration: const BoxDecoration(
-      color: AppColors.textFieldColor, // Use the same background color as the TextField
-
+    decoration: BoxDecoration(
+      color: AppColors.textFieldColor,
+      borderRadius: BorderRadius.circular(8.0),
+      border: Border.all(color: Colors.grey.shade400),
     ),
     child: DropdownButtonHideUnderline(
-      child: DropdownButton<String>(
+      child: DropdownButtonFormField<String>(
         value: value,
         items: items.map((String item) {
           return DropdownMenuItem<String>(
@@ -93,15 +101,19 @@ Widget allDropdownButton({
             child: Text(
               item,
               style: const TextStyle(
-                color: Colors.black, // Set the text color here
+                color: Colors.black,
                 fontSize: 16,
-                fontFamily: 'Poppins', // Use the same font as the TextField hint
+                fontFamily: 'Poppins',
               ),
             ),
           );
         }).toList(),
         onChanged: onChanged,
-        dropdownColor: AppColors.textFieldColor, // Set the dropdown menu background color
+        decoration: InputDecoration(
+          border: InputBorder.none,
+        ),
+        dropdownColor: AppColors.textFieldColor,
+        icon: const Icon(Icons.arrow_drop_down),
       ),
     ),
   );
