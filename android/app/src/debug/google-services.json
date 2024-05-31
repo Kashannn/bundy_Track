@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "705871068180",
+    "project_id": "bundy-track-87a2a",
+    "storage_bucket": "bundy-track-87a2a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:705871068180:android:7b4b39f646eeefddc33b01",
+        "android_client_info": {
+          "package_name": "com.example.bundy_track"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkQDxrvkRHXsu_GRc5QWkKUdGMa28rghA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

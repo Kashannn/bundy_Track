@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../Resourcess/Components/tabbar.dart';
 import '../../view/allocator.dart';
-import '../../view/bundled.dart';
 import '../../view/home.dart';
 import '../../view/overtime.dart';
 import '../../view/profile.dart';
@@ -35,8 +34,7 @@ class Routes {
         return MaterialPageRoute(builder: (_) =>  Overtime( ));
       case RoutesName.selectionScreen:
         return MaterialPageRoute(builder: (_) => const Selection());
-      case RoutesName.bundled:
-        return MaterialPageRoute(builder: (_) => const Bundled());
+
       case RoutesName.home:
         return MaterialPageRoute(builder: (_) => Home());
       default:

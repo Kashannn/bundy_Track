@@ -1,10 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Resourcess/Components/Colors.dart';
+import '../notification/notification.dart';
 import '../provider/Welcome_provider.dart';
 import '../utils/routes/routes_name.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
+  @override
+  _WelcomeScreenState createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  NotificationService notificationService = NotificationService();
+
+  @override
+  void initState() {
+    super.initState();
+    notificationService.firebaseInit();
+    notificationService.isTokenRefresh();
+    notificationService.requestNotificationPermission();
+    notificationService.messaging.getToken().then((value) {
+      print('Token: $value');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +88,7 @@ class WelcomeScreen extends StatelessWidget {
                                     }
                                   },
                                   itemBuilder: (BuildContext context) =>
-                                      <PopupMenuEntry<String>>[
+                                  <PopupMenuEntry<String>>[
                                     const PopupMenuItem<String>(
                                       value: 'Profile',
                                       child: ListTile(
@@ -84,13 +103,13 @@ class WelcomeScreen extends StatelessWidget {
                                         title: Text('TimeHours Request'),
                                       ),
                                     ),
-                                        const PopupMenuItem<String>(
-                                          value: 'SelectHours',
-                                          child: ListTile(
-                                            leading: Icon(Icons.workspace_premium),
-                                            title: Text('Selected Request'),
-                                          ),
-                                        ),
+                                    const PopupMenuItem<String>(
+                                      value: 'SelectHours',
+                                      child: ListTile(
+                                        leading: Icon(Icons.workspace_premium),
+                                        title: Text('Selected Request'),
+                                      ),
+                                    ),
                                     const PopupMenuItem<String>(
                                       value: 'Logout',
                                       child: ListTile(
@@ -104,15 +123,15 @@ class WelcomeScreen extends StatelessWidget {
                                   radius: 30,
                                   backgroundColor: AppColors.container,
                                   backgroundImage: userProvider
-                                          .userImageUrl.isNotEmpty
+                                      .userImageUrl.isNotEmpty
                                       ? NetworkImage(userProvider.userImageUrl)
                                       : null,
                                   child: userProvider.userImageUrl.isEmpty
                                       ? Icon(
-                                          Icons.person,
-                                          size: 60,
-                                          color: Colors.white,
-                                        )
+                                    Icons.person,
+                                    size: 60,
+                                    color: Colors.white,
+                                  )
                                       : null,
                                 ),
                               ],
