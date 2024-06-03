@@ -19,7 +19,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     notificationService.firebaseInit();
     notificationService.isTokenRefresh();
     notificationService.requestNotificationPermission();
-    notificationService.messaging.getToken().then((value) {
+    notificationService.getToken().then((value) {
       print('Token: $value');
     });
   }
