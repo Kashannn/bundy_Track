@@ -11,4 +11,5 @@ class RoutesName {
   static const String selectionScreen = '/selectionScreen';
   static const String bundled = '/Bundled';
   static const String home = '/home';
+  static const String message = '/message';
 }

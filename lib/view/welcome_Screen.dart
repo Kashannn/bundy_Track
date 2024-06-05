@@ -16,7 +16,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
     super.initState();
-    notificationService.firebaseInit();
+    notificationService.firebaseInit(context);
     notificationService.isTokenRefresh();
     notificationService.requestNotificationPermission();
     notificationService.getToken().then((value) {

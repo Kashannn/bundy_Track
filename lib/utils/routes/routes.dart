@@ -3,6 +3,7 @@ import 'package:bundy_track/utils/routes/routes_name.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../Resourcess/Components/tabbar.dart';
+import '../../notification/message_screen.dart';
 import '../../view/allocator.dart';
 import '../../view/home.dart';
 import '../../view/overtime.dart';
@@ -31,12 +32,13 @@ class Routes {
       case RoutesName.profile:
         return MaterialPageRoute(builder: (_) => const Profile());
       case RoutesName.overtime:
-        return MaterialPageRoute(builder: (_) =>  Overtime( ));
+        return MaterialPageRoute(builder: (_) => const Overtime( ));
       case RoutesName.selectionScreen:
         return MaterialPageRoute(builder: (_) => const Selection());
-
       case RoutesName.home:
-        return MaterialPageRoute(builder: (_) => Home());
+        return MaterialPageRoute(builder: (_) => const Home());
+        case RoutesName.message:
+        return MaterialPageRoute(builder: (_) =>const MessageScreen());
       default:
         return MaterialPageRoute(builder: (_) {
           return Scaffold(
