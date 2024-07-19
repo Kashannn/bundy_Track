@@ -1,25 +1,33 @@
-Bundy Track
-Employee Management App
-Overview
+# Bundy Track
+
+*Employee Management App*
+
+## Overview
+
 Bundy Track is a Flutter-based application designed to streamline interactions between employees and employers. This app offers distinct functionalities for both roles, providing a robust platform for managing work hours, handling overtime requests, and updating profiles.
 
-Features
-Authentication
-Login: Secure login for both employees and employers.
-Sign-Up: New users can sign up and create an account.
-Employee Features
-Work Hours Tracking: Employees can log their work hours.
-Overtime Requests: Employees can send overtime requests to their employers.
-Profile Management: Employees can view and update their profiles.
-Stopwatch Functionality: Employees can use a built-in stopwatch to track their work hours accurately.
-Employer Features
-Employee Work Hours: Employers can view the total work hours logged by each employee.
-Overtime Request Management: Employers can view and accept or reject overtime requests from employees.
-Employee Records: Employers can access and manage employee records.
-Technologies Used
-Flutter: For building the mobile application.
-Firebase: For authentication, Firestore database, and storage solutions.
-Screenshots
+## Features
+
+### Authentication
+- **Login:** Secure login for both employees and employers.
+- **Sign-Up:** New users can sign up and create an account.
+
+### Employee Features
+- **Work Hours Tracking:** Employees can log their work hours.
+- **Overtime Requests:** Employees can send overtime requests to their employers.
+- **Profile Management:** Employees can view and update their profiles.
+- **Stopwatch Functionality:** Employees can use a built-in stopwatch to track their work hours accurately.
+
+### Employer Features
+- **Employee Work Hours:** Employers can view the total work hours logged by each employee.
+- **Overtime Request Management:** Employers can view and accept or reject overtime requests from employees.
+- **Employee Records:** Employers can access and manage employee records.
+
+## Technologies Used
+- **Flutter:** For building the mobile application.
+- **Firebase:** For authentication, Firestore database, and storage solutions.
+
+## Screenshots
 <table>
   <tr>
     <td><img src="https://github.com/user-attachments/assets/fddbf1b4-83c4-445b-aa75-6c73a96fae4c" alt="Allocator-1" width="150"/></td>
