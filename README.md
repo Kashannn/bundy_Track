@@ -1,8 +1,7 @@
-# bundy_track
-
+Bundy Track
 Employee Management App
 Overview
-The Employee Management App is a Flutter-based application designed to streamline employee and employer interactions. The app includes distinct functionalities for employees and employers, providing a robust platform for managing work hours, overtime requests, and profile updates.
+Bundy Track is a Flutter-based application designed to streamline interactions between employees and employers. This app offers distinct functionalities for both roles, providing a robust platform for managing work hours, handling overtime requests, and updating profiles.
 
 Features
 Authentication
@@ -20,6 +19,7 @@ Employee Records: Employers can access and manage employee records.
 Technologies Used
 Flutter: For building the mobile application.
 Firebase: For authentication, Firestore database, and storage solutions.
+Screenshots
 <table>
   <tr>
     <td><img src="https://github.com/user-attachments/assets/fddbf1b4-83c4-445b-aa75-6c73a96fae4c" alt="Allocator-1" width="150"/></td>
